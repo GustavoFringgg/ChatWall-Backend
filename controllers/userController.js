@@ -132,6 +132,10 @@ const follow = async (req, res, next) => {
       return next(appError(401, "你無法追蹤自己", next));
     }
 
+    if (!(await User.findOne({ _id: req.params.user_id }))) {
+      return next(appError(401, "沒有此追蹤ID", next));
+    }
+
     await User.updateOne(
       {
         _id: req.user.id,
