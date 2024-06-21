@@ -21,4 +21,4 @@ const doc = {
 const outputFile = "./swagger-output.json"; //生成的檔案名稱
 const endpointFile = ["./app.js"]; //帶入陣列
 
-swaggerAutogen(outputFile, endpointFile, doc); //帶入三個參數 1.輸出膽案名稱 2.讀取檔案名稱 3.doc資料
+swaggerAutogen(outputFile, endpointFile, doc); //帶入三個參數 1.輸出檔案名稱 2.讀取檔案名稱 3.doc資料

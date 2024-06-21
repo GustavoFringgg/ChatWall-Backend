@@ -7,30 +7,9 @@ const appError = require("../service/appError");
 
 //****get****
 const getPosts = async (req, res, next) => {
-  /* #swagger.tags = ['Posts']
-     * #swagger.description = 'Posts successfully obtained.'
-     * #swagger.responses[200] = {
-      description: "posts info",
-      schema: {
-          "status": true,
-          "message": [
-              {
-                  "_id": "6662bc9c17654aceed98d988",
-                  "user": {
-                      "_id": "665d385fdc5fdb708aa120e7",
-                      "name": "Mary",
-                      "photo": "https://thumb.fakeface.rest/thumb_female_30_8ab46617938c195cadf80bc11a96ce906a47c110.jpg"
-                  },
-                  "likes": 0,
-                  "content": "5",
-                  "image": "",
-                  "createdAt": "2024-06-07T07:54:04.995Z"
-              }
-          ]
-      }
-      }
-     */
-
+  /**#swagger.tags=['Posts']
+   *
+   */
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //由舊到新搜尋
   const q = req.query.q !== undefined ? { content: new RegExp(req.query.q, "i") } : {};
   const post = await Post.find(q)
@@ -101,7 +80,7 @@ const likspost = async (req, res, next) => {
   const _id = req.params.id;
   await Post.findOneAndUpdate({ _id }, { $addToSet: { likes: req.user.id } });
   res.status(201).json({
-    status: "success",
+    status: true,
     postId: _id,
     userId: req.user.id,
   });
@@ -111,7 +90,7 @@ const deletelikepost = async (req, res, next) => {
   const _id = req.params.id;
   await Post.findOneAndUpdate({ _id }, { $pull: { likes: req.user.id } });
   res.status(201).json({
-    status: "success",
+    status: true,
     postId: _id,
     userId: req.user.id,
   });
@@ -125,7 +104,7 @@ const getuserpost = async (req, res, next) => {
   });
 
   res.status(200).json({
-    status: "success",
+    status: true,
     results: posts.length,
     posts,
   });
@@ -146,7 +125,7 @@ const postcomment = async (req, res, next) => {
     comment,
   });
   res.status(201).json({
-    status: "success",
+    status: true,
     data: {
       comments: newComment,
     },

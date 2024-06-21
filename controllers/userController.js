@@ -9,6 +9,10 @@ const appError = require("../service/appError");
 const { generateSendJWT } = require("../service/auth");
 
 const sign_up = async (req, res, next) => {
+  /**
+   * #swagger.tags = ['User']
+   *
+   */
   let { email, password, confirmPassword, name } = req.body;
 
   // 內容不可為空
