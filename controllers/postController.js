@@ -78,6 +78,9 @@ const postPosts = async (req, res, next) => {
 
 const likspost = async (req, res, next) => {
   const _id = req.params.id;
+  if (!(await Post.findById({ _id: _id }))) {
+    return next(appError(400, "沒有此貼文"));
+  }
   await Post.findOneAndUpdate({ _id }, { $addToSet: { likes: req.user.id } });
   res.status(201).json({
     status: true,
@@ -88,6 +91,9 @@ const likspost = async (req, res, next) => {
 
 const deletelikepost = async (req, res, next) => {
   const _id = req.params.id;
+  if (!(await Post.findById({ _id: _id }))) {
+    return next(appError(400, "沒有此貼文"));
+  }
   await Post.findOneAndUpdate({ _id }, { $pull: { likes: req.user.id } });
   res.status(201).json({
     status: true,
