@@ -69,7 +69,7 @@ const sign_in = async (req, res, next) => {
 
 const profile = async (req, res, next) => {
   res.status(200).json({
-    status: "success",
+    status: true,
     user: `這是${req.user.name}的個人頁面`,
   });
 };
@@ -155,7 +155,7 @@ const follow = async (req, res, next) => {
       }
     );
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "您已成功追蹤！",
     });
   }
@@ -182,7 +182,7 @@ const unfollow = async (req, res, next) => {
     }
   );
   res.status(200).json({
-    status: "success",
+    status: true,
     message: "您已成功取消追蹤！",
   });
 };
@@ -194,7 +194,7 @@ const following = async (req, res, next) => {
   });
   const followingList = currentUser.following;
   res.status(200).json({
-    status: "success",
+    status: true,
     followingList,
   });
 };

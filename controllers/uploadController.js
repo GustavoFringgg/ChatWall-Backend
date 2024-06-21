@@ -26,7 +26,7 @@ const uploadcheck = async (req, res, next) => {
     album: process.env.IMGUR_ALBUM_ID,
   });
   res.status(200).json({
-    status: "success",
+    status: true,
     imgUrl: response.data.link,
   });
 };
