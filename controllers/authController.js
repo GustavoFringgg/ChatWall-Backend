@@ -7,8 +7,13 @@ const { generateSendJWT } = require("../service/auth");
 const sign_up = async (req, res, next) => {
   let { email, password, confirmPassword, name } = req.body;
 
-  // 內容不可為空
+  if (!validator.isLength(name, { min: 2 })) {
+    //回傳true | false
+    return next(appError("400", "暱稱不能少於兩個字元", next));
+  }
+
   if (!email || !password || !confirmPassword || !name) {
+    // 內容不可為空
     return next(appError("400", "欄位未填寫正確！", next));
   }
 
