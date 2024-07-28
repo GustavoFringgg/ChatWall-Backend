@@ -29,9 +29,30 @@
         "description": "取得所有貼文",
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
+            "name": "keyword",
+            "in": "query",
+            "description": "查詢貼文官內容關鍵字",
+            "required": false,
             "type": "string"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "查詢貼文數量，上限 50 筆，預設 50 筆",
+            "required": false,
+            "type": "integer",
+            "maximum": 50
+          },
+          {
+            "name": "timeSort",
+            "in": "query",
+            "description": "發文時間排序方式，預設 desc 降冪排序，asc=遠到近，desc=近到遠",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
           }
         ],
         "responses": {

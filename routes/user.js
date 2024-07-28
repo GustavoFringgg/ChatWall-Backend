@@ -5,8 +5,6 @@ const { isAuth } = require("../service/auth");
 const userController = require("../controllers/userController");
 
 router
-  .post("/sign_up", [handleErrorAsync(userController.sign_up)] /*** #swagger.tags=['Users-會員']*/) //註冊會員
-  .post("/sign_in", [handleErrorAsync(userController.sign_in)] /*** #swagger.tags=['Users-會員']*/) //登入會員
   .patch("/updatePassword", [isAuth, handleErrorAsync(userController.updatePassword)] /*** #swagger.tags=['Users-會員']*/) //重設密碼
   .get("/profile/", [isAuth, handleErrorAsync(userController.profile)] /*** #swagger.tags=['Users-會員']*/) //取得個人資料
   .patch("/profile/", [isAuth, handleErrorAsync(userController.patchprofile)] /*** #swagger.tags=['Users-會員']*/) //更新個人資料

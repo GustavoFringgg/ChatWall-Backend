@@ -6,9 +6,15 @@ const mongoose = require("mongoose");
 const appError = require("../service/appError");
 
 const getPosts = async (req, res, next) => {
-  const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //由舊到新搜尋
-  const q = req.query.q !== undefined ? { content: new RegExp(req.query.q, "i") } : {};
-  const post = await Post.find(q)
+  const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
+  console.log(timeSort);
+  const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
+
+  let size = 50;
+  if (req.query.size) {
+    size = parseInt(req.query.size) > 50 ? 50 : parseInt(req.query.size);
+  }
+  const post = await Post.find(keyword)
     .populate({
       path: "user", //因為Post.find，所以指向Post model裡頭的user欄位
       select: "name photo email sex",
@@ -17,7 +23,8 @@ const getPosts = async (req, res, next) => {
       path: "comments",
       select: "comment user",
     })
-    .sort(timeSort);
+    .sort(timeSort)
+    .limit(size);
   if (post.length !== 0) {
     return handleSuccess(res, post, `目前共有${post.length}則貼文`);
   } else return handleSuccess(res, "尚未有任何貼文");
@@ -25,43 +32,6 @@ const getPosts = async (req, res, next) => {
 
 //****post****
 const postPosts = async (req, res, next) => {
-  /**
-    * #swagger.description = 'create posts info'
-    * #swagger.parameters['body']={
-      in:"body",
-      required : true,
-      type:"object",
-      description:"資料格式",
-      schema:{
-        "$user":"Object_id",
-        "likes":10,
-        "$content":"測試",
-        "image":"string" ,
-      }
-      }
-
-    *  #swagger.responses[200] = {
-        description: "posts info",
-        schema: {
-            "status": true,
-            "message": [
-                {
-                    "_id": "6662bc9c17654aceed98d988",
-                    "user": {
-                        "_id": "665d385fdc5fdb708aa120e7",
-                        "name": "Mary",
-                        "photo": "https://thumb.fakeface.rest/thumb_female_30_8ab46617938c195cadf80bc11a96ce906a47c110.jpg"
-                    },
-                    "likes": 0,
-                    "content": "5",
-                    "image": "",
-                    "createdAt": "2024-06-07T07:54:04.995Z"
-                }
-            ]
-        }
-        }
-        */
-
   const { content } = req.body;
   if (content != undefined && content.trim()) {
     const new_post = await Post.create({ user: req.user._id, content });

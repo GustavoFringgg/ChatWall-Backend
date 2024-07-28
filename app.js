@@ -22,6 +22,7 @@ const axios = require("axios");
 const postsRouter = require("./routes/post");
 const usersRouter = require("./routes/user");
 const uploadRouter = require("./routes/upload");
+const authRouter = require("./routes/auth");
 const { log } = require("console"); //將console.log更改為log，更簡潔易讀
 //mongodb引入
 require("./connections");
@@ -35,6 +36,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
 app.use("/upload", uploadRouter);
+app.use("/auth", authRouter);
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 if (process.env.NODE_ENV != undefined) {
   log(process.env.NODE_ENV + "模式開啟");

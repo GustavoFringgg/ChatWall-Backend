@@ -14,8 +14,29 @@ router
     /*** #swagger.tags=['Posts-貼文']
      * #swagger.summary = '取得所有貼文'
      * #swagger.description='取得所有貼文'
+     * #swagger.parameters['keyword'] = {
+            in: 'query',
+            description: '查詢貼文官內容關鍵字',
+            required: false,
+            type: 'string'
+        }
+        #swagger.parameters['size'] = {
+            in: 'query',
+            description: '查詢貼文數量，上限 50 筆，預設 50 筆',
+            required: false,
+            type: 'integer',
+            maximum: 50
+        }
+        #swagger.parameters['timeSort'] = {
+            in: 'query',
+            description: '發文時間排序方式，預設 desc 降冪排序，asc=遠到近，desc=近到遠',
+            required: false,
+            type: 'string',
+            enum: ['asc', 'desc']
+        }   
+  
      */
-  ) //取得所有貼文
+  )
   .get(
     "/:id",
     [isAuth, handleErrorAsync(postController.getonePost)]
