@@ -20,6 +20,34 @@
     }
   },
   "paths": {
+    "/auth/sign_Up": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "註冊",
+        "description": "註冊",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/sign_In": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "登入",
+        "description": "登入",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/posts/": {
       "get": {
         "tags": [
@@ -209,32 +237,6 @@
             "type": "string"
           }
         ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/users/sign_up": {
-      "post": {
-        "tags": [
-          "Users-會員"
-        ],
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/users/sign_in": {
-      "post": {
-        "tags": [
-          "Users-會員"
-        ],
-        "description": "",
         "responses": {
           "default": {
             "description": ""

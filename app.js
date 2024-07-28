@@ -33,10 +33,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
 app.use("/upload", uploadRouter);
-app.use("/auth", authRouter);
+
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 if (process.env.NODE_ENV != undefined) {
   log(process.env.NODE_ENV + "模式開啟");
