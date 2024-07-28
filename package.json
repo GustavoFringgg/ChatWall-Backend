@@ -36,6 +36,6 @@
     "cross-env": "^7.0.3"
   },
   "prettier": {
-    "printWidth": 300
+    "printWidth": 400
   }
 }

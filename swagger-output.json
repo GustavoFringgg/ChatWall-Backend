@@ -23,9 +23,10 @@
     "/posts/": {
       "get": {
         "tags": [
-          "Posts"
+          "Posts-貼文"
         ],
-        "description": "",
+        "summary": "取得所有貼文",
+        "description": "取得所有貼文",
         "parameters": [
           {
             "name": "authorization",
@@ -41,9 +42,10 @@
       },
       "post": {
         "tags": [
-          "Posts"
+          "Posts-貼文"
         ],
-        "description": "",
+        "summary": "新增貼文",
+        "description": "新增貼文",
         "parameters": [
           {
             "name": "authorization",
@@ -61,9 +63,10 @@
     "/posts/{id}": {
       "get": {
         "tags": [
-          "Posts"
+          "Posts-貼文"
         ],
-        "description": "",
+        "summary": "取得單一貼文",
+        "description": "取得單一貼文",
         "parameters": [
           {
             "name": "id",
@@ -87,9 +90,10 @@
     "/posts/user/{id}": {
       "get": {
         "tags": [
-          "Posts"
+          "Posts-貼文"
         ],
-        "description": "",
+        "summary": "取得個人所有貼文列表",
+        "description": "取得個人所有貼文列表",
         "parameters": [
           {
             "name": "id",
@@ -113,9 +117,10 @@
     "/posts/{id}/comment": {
       "post": {
         "tags": [
-          "Posts"
+          "Posts-貼文"
         ],
-        "description": "",
+        "summary": "取新增一則貼文的留言",
+        "description": "新增一則貼文的留言",
         "parameters": [
           {
             "name": "id",
@@ -139,9 +144,10 @@
     "/posts/{id}/likes": {
       "post": {
         "tags": [
-          "Posts"
+          "Posts-貼文"
         ],
-        "description": "",
+        "summary": "新增一則貼文的讚",
+        "description": "新增一則貼文的讚",
         "parameters": [
           {
             "name": "id",
@@ -165,9 +171,10 @@
     "/posts/{id}/unlikes": {
       "delete": {
         "tags": [
-          "Posts"
+          "Posts-貼文"
         ],
-        "description": "",
+        "summary": "取消一則貼文的讚",
+        "description": "取消一則貼文的讚",
         "parameters": [
           {
             "name": "id",
@@ -191,7 +198,7 @@
     "/users/sign_up": {
       "post": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "responses": {
@@ -204,7 +211,7 @@
     "/users/sign_in": {
       "post": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "responses": {
@@ -217,7 +224,7 @@
     "/users/updatePassword": {
       "patch": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "parameters": [
@@ -237,7 +244,7 @@
     "/users/profile/": {
       "get": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "parameters": [
@@ -255,7 +262,7 @@
       },
       "patch": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "parameters": [
@@ -275,7 +282,7 @@
     "/users/getLikeList": {
       "get": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "parameters": [
@@ -295,7 +302,7 @@
     "/users/{user_id}/follow": {
       "post": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "parameters": [
@@ -321,7 +328,7 @@
     "/users/following": {
       "get": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "parameters": [
@@ -341,7 +348,7 @@
     "/users/{id}/unfollow": {
       "delete": {
         "tags": [
-          "Users"
+          "Users-會員"
         ],
         "description": "",
         "parameters": [
