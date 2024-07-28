@@ -18,13 +18,17 @@ const sign_up = async (req, res, next) => {
   }
 
   // 密碼 8 碼以上
-  if (!validator.isLength(password, { min: 8 })) {
-    return next(appError("400", "密碼字數低於 8 碼", next));
+  if (!validator.isLength(password, { min: 8, max: 16 })) {
+    return next(appError("400", "密碼需介於 6-18 字元之間", next));
   }
 
   // 是否為 Email
   if (!validator.isEmail(email)) {
     return next(appError("400", "Email 格式不正確", next));
+  }
+  const user_email = await User.findOne({ email }); //如果沒註冊過，回傳NULL
+  if (user_email) {
+    return next(appError(400, "信箱已註冊過~"));
   }
 
   // 加密密碼
