@@ -3,11 +3,11 @@ const swaggerAutogen = require("swagger-autogen")(); //引入swagger
 const doc = {
   //會有info物件
   info: {
-    title: "Meta API", //物件名稱
-    description: "示範範例", //描述這個文件在幹嘛
+    title: "Meta API",
+    description: "Meta swagger api",
   },
   host: "localhost:3000",
-  schemes: ["http", "https"], //swagger支援什麼模式
+  schemes: ["http", "https"],
   securityDefinitions: {
     apikeyAuth: {
       type: "apiKey",
@@ -18,7 +18,7 @@ const doc = {
   },
 };
 
-const outputFile = "./swagger-output.json"; //生成的檔案名稱
-const endpointFile = ["./app.js"]; //帶入陣列
+const outputFile = "./swagger-output.json";
+const endpointFile = ["./app.js"];
 
-swaggerAutogen(outputFile, endpointFile, doc); //帶入三個參數 1.輸出檔案名稱 2.讀取檔案名稱 3.doc資料
+swaggerAutogen(outputFile, endpointFile, doc);

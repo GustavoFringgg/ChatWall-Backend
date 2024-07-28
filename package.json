@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "startt": "nodemon app.js",
     "start:dev": "cross-env NODE_ENV=dev nodemon ./bin/www",
     "start:production": "cross-env NODE_ENV=production nodemon ./bin/www",
     "swagger": "node ./swagger.js"
@@ -35,6 +36,6 @@
     "cross-env": "^7.0.3"
   },
   "prettier": {
-    "printWidth": 100
+    "printWidth": 300
   }
 }

@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Meta API",
-    "description": "示範範例",
+    "description": "Meta swagger api",
     "version": "1.0.0"
   },
   "host": "localhost:3000",
@@ -22,6 +22,9 @@
   "paths": {
     "/posts/": {
       "get": {
+        "tags": [
+          "Posts"
+        ],
         "description": "",
         "parameters": [
           {
@@ -37,6 +40,9 @@
         }
       },
       "post": {
+        "tags": [
+          "Posts"
+        ],
         "description": "",
         "parameters": [
           {
@@ -54,6 +60,9 @@
     },
     "/posts/{id}": {
       "get": {
+        "tags": [
+          "Posts"
+        ],
         "description": "",
         "parameters": [
           {
@@ -77,6 +86,9 @@
     },
     "/posts/user/{id}": {
       "get": {
+        "tags": [
+          "Posts"
+        ],
         "description": "",
         "parameters": [
           {
@@ -100,6 +112,9 @@
     },
     "/posts/{id}/comment": {
       "post": {
+        "tags": [
+          "Posts"
+        ],
         "description": "",
         "parameters": [
           {
@@ -123,6 +138,9 @@
     },
     "/posts/{id}/likes": {
       "post": {
+        "tags": [
+          "Posts"
+        ],
         "description": "",
         "parameters": [
           {
@@ -146,6 +164,9 @@
     },
     "/posts/{id}/unlikes": {
       "delete": {
+        "tags": [
+          "Posts"
+        ],
         "description": "",
         "parameters": [
           {
@@ -169,6 +190,9 @@
     },
     "/users/sign_up": {
       "post": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -179,6 +203,9 @@
     },
     "/users/sign_in": {
       "post": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -189,6 +216,9 @@
     },
     "/users/updatePassword": {
       "patch": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -206,6 +236,9 @@
     },
     "/users/profile/": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -221,6 +254,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -238,6 +274,9 @@
     },
     "/users/getLikeList": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -255,6 +294,9 @@
     },
     "/users/{user_id}/follow": {
       "post": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -278,6 +320,9 @@
     },
     "/users/following": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -295,6 +340,9 @@
     },
     "/users/{id}/unfollow": {
       "delete": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -318,6 +366,9 @@
     },
     "/upload/filecheck": {
       "post": {
+        "tags": [
+          "Upload"
+        ],
         "description": "",
         "parameters": [
           {
@@ -335,6 +386,9 @@
     },
     "/upload/file": {
       "post": {
+        "tags": [
+          "Upload"
+        ],
         "description": "",
         "parameters": [
           {

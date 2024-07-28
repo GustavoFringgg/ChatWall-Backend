@@ -35,8 +35,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
 app.use("/upload", uploadRouter);
-app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile)); //兩個參數  1.放ui的server 2.ui設定檔
-
+app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 if (process.env.NODE_ENV != undefined) {
   log(process.env.NODE_ENV + "模式開啟");
 } else {

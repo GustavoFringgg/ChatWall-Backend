@@ -9,10 +9,6 @@ const appError = require("../service/appError");
 const { generateSendJWT } = require("../service/auth");
 
 const sign_up = async (req, res, next) => {
-  /**
-   * #swagger.tags = ['User']
-   *
-   */
   let { email, password, confirmPassword, name } = req.body;
 
   // 內容不可為空
@@ -102,19 +98,11 @@ const updatePassword = async (req, res, next) => {
 
 const patchprofile = async (req, res, next) => {
   const { name, sex } = req.body;
-  const updateuserinfo = await User.findByIdAndUpdate(
-    req.user.id,
-    { name, sex },
-    { new: true, runValidators: true }
-  );
+  const updateuserinfo = await User.findByIdAndUpdate(req.user.id, { name, sex }, { new: true, runValidators: true });
   if (!updateuserinfo) {
     return next(appError(404, "用戶不存在"));
   }
-  return handleSuccess(
-    res,
-    `${req.user.name}的資料已被更新為${updateuserinfo.name}`,
-    updateuserinfo
-  );
+  return handleSuccess(res, `${req.user.name}的資料已被更新為${updateuserinfo.name}`, updateuserinfo);
 };
 
 const getLikeList = async (req, res, next) => {

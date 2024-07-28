@@ -5,11 +5,7 @@ const handleSuccess = require("../service/handleSuccess");
 const mongoose = require("mongoose");
 const appError = require("../service/appError");
 
-//****get****
 const getPosts = async (req, res, next) => {
-  /**#swagger.tags=['Posts']
-   *
-   */
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //由舊到新搜尋
   const q = req.query.q !== undefined ? { content: new RegExp(req.query.q, "i") } : {};
   const post = await Post.find(q)
@@ -30,7 +26,6 @@ const getPosts = async (req, res, next) => {
 //****post****
 const postPosts = async (req, res, next) => {
   /**
-    * #swagger.tags = ['Posts']
     * #swagger.description = 'create posts info'
     * #swagger.parameters['body']={
       in:"body",

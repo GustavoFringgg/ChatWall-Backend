@@ -8,6 +8,9 @@ const firebaseAdmin = require("../service/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
 const uploadcheck = async (req, res, next) => {
+  /**
+   * #swagger.tags=['Uploadcheck']
+   */
   if (!req.files.length) {
     return next(appError(400, "尚未上傳檔案", next));
   }
@@ -32,6 +35,9 @@ const uploadcheck = async (req, res, next) => {
 };
 
 const uploadfile = async (req, res, next) => {
+  /**
+   * #swagger.tags=['Upload']
+   */
   if (!req.files.length) {
     return next(appError(400, "尚未上傳檔案", next));
   }
