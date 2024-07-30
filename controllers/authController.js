@@ -17,6 +17,9 @@ const sign_up = async (req, res, next) => {
     return next(appError("400", "欄位未填寫正確！", next));
   }
 
+  if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password)) {
+    return next(appError(400, "密碼需包含至少一個字母和一個數字,並且至少6個字符長"));
+  }
   // 密碼正確
   if (password !== confirmPassword) {
     return next(appError("400", "密碼不一致！", next));

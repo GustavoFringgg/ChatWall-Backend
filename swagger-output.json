@@ -27,6 +27,41 @@
         ],
         "summary": "註冊",
         "description": "註冊",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "註冊資訊",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "王小明"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "AA@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Aa123456"
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "example": "Aa123456"
+                }
+              },
+              "required": [
+                "name",
+                "email",
+                "password",
+                "confirmPassword"
+              ]
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -41,6 +76,31 @@
         ],
         "summary": "登入",
         "description": "登入",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "登入資訊",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "test@mail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "123456789A"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
