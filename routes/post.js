@@ -49,8 +49,18 @@ router
     "/",
     [isAuth, handleErrorAsync(postController.postPosts)]
     /** #swagger.tags=['Posts-貼文']
-     * #swagger.summary = '新增貼文'
-     * #swagger.description='新增貼文'*/
+        #swagger.summary = '新增貼文'
+        #swagger.description='新增貼文'
+        #swagger.security = [{"apiKeyAuth": []}]
+        #swagger.parameters['body'] = {
+        in: 'body',
+        description: '新增貼文資訊',
+        required: true,
+        schema: {
+                $content: '今天想吃牛肉麵',
+        }
+    }
+     * */
   )
   .get(
     "/user/:id",

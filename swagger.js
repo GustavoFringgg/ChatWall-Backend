@@ -9,11 +9,11 @@ const doc = {
   host: "localhost:3000",
   schemes: ["http", "https"],
   securityDefinitions: {
-    apikeyAuth: {
+    apiKeyAuth: {
       type: "apiKey",
       in: "headers",
       name: "authorization",
-      description: "請加上api key",
+      description: '請在取得的 token 前補上 "Bearer " 再送出(須包含一空白字元)，範例："Bearer {your token}"',
     },
   },
 };

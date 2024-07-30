@@ -12,11 +12,11 @@
     "https"
   ],
   "securityDefinitions": {
-    "apikeyAuth": {
+    "apiKeyAuth": {
       "type": "apiKey",
       "in": "headers",
       "name": "authorization",
-      "description": "請加上api key"
+      "description": "請在取得的 token 前補上 \"Bearer \" 再送出(須包含一空白字元)，範例：\"Bearer {your token}\""
     }
   },
   "paths": {
@@ -160,13 +160,36 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "新增貼文資訊",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "example": "今天想吃牛肉麵"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
           }
         ],
         "responses": {
           "default": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/{id}": {
