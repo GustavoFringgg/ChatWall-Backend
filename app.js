@@ -1,9 +1,9 @@
 //出現重大錯誤時，沒有被try cash捕捉，就會觸發uncaughtException並捕捉
 ////監聽器通常放在最頂端，確保應用程式在啟動時就能捕捉到任何可能的異常*
-process.on("uncaughtException", (err) => {
+process.on("uncaughtException", (e) => {
   // 記錄錯誤下來，等到服務都處理完後，停掉該 process
-  console.error("Uncaughted Exception!"); //幾點幾分出錯的
-  console.error(err); //出錯的程式碼在哪裡
+  console.error("系統錯誤!"); //幾點幾分出錯的
+  console.error(e); //出錯的程式碼在哪裡
   process.exit(1); //node process錯誤代號
 });
 
@@ -99,9 +99,10 @@ app.use((err, req, res, next) => {
   return resErrorProd(err, res);
 });
 
-// 透過process.on註冊監聽，處理未捕捉的catch
+// 透過process.on註冊監聽，處理未捕捉的promise
 process.on("unhandledRejection", (reason, promise) => {
   console.error("未捕捉到的 rejection:", promise, "原因：", reason);
+  process.exit(1);
 });
 
 /*在Express應用程式中使用process.on()方法設置事件監聽器，

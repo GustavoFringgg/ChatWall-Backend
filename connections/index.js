@@ -6,5 +6,5 @@ const DB = process.env.DATABASE.replace("<password>", process.env.DATABASE_passw
 
 mongoose
   .connect(DB)
-  .then((res) => console.log("連線資料成功"))
+  .then((res) => console.log("連線庫資料成功"))
   .catch((err) => console.log(err));
