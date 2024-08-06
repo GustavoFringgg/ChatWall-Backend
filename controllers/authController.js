@@ -34,20 +34,15 @@ const sign_up = async (req, res, next) => {
   if (!validator.isEmail(email)) {
     return next(appError("400", "Email 格式不正確", next));
   }
-  const user_email = await User.findOne({ email }); //如果沒註冊過，回傳NULL
+  const user_email = await User.findOne({ email }); //true=>data false=>null
+  console.log(user_email);
   if (user_email) {
     return next(appError(400, "信箱已註冊過~"));
   }
 
-  // 加密密碼
+  //加密密碼;
   password = await bcrypt.hash(password, 12);
-  const newUser = await User.create({
-    email,
-    password,
-    name,
-    sex: req.body.sex || "male",
-  });
-
+  const newUser = req.body;
   generateSendJWT(newUser, 201, res);
 };
 
