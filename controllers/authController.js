@@ -42,7 +42,13 @@ const sign_up = async (req, res, next) => {
 
   //加密密碼;
   password = await bcrypt.hash(password, 12);
-  const newUser = req.body;
+  const newUser = await User.create({
+    email,
+    password,
+    name,
+    sex: req.body.sex || "male",
+  });
+
   generateSendJWT(newUser, 201, res);
 };
 
