@@ -9,9 +9,14 @@ const appError = require("../service/appError");
 const { generateSendJWT } = require("../service/auth");
 
 const profile = async (req, res, next) => {
+  const { name, sex, email, createdAt } = req.user;
+  const localTime = createdAt.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
   res.status(200).json({
     status: true,
-    user: `這是${req.user.name}的個人頁面`,
+    user: `這是${name}的個人頁面`,
+    email: email,
+    sex: sex,
+    message: `帳號建立時間:${localTime}`,
   });
 };
 

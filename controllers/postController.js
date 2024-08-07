@@ -7,7 +7,6 @@ const appError = require("../service/appError");
 
 const getPosts = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
-  console.log(timeSort);
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
 
   let size = 50;

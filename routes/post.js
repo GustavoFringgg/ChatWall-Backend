@@ -10,7 +10,7 @@ const handleErrorAsync = require("../service/handleErrorAsync");
 router
   .get(
     "/",
-    [handleErrorAsync(postController.getPosts)]
+    [isAuth, handleErrorAsync(postController.getPosts)]
     /*** #swagger.tags=['Posts-貼文']
      * #swagger.summary = '取得所有貼文'
      * #swagger.description='取得所有貼文'

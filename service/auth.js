@@ -26,8 +26,11 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
 
   if (!decoded || !decoded.id) {
     return next(appError(401, "Token 無效"));
-  }
-  const currentUser = await User.findById(decoded.id);
+  } // decoded=>token物件:{ id , iat,exp}
+
+  const currentUser = await User.findById(decoded.id).select("+email +createdAt");
+  //currentUser =>整包會員資料
+  console.log(currentUser);
 
   if (!currentUser) {
     return next(appError(401, "用戶不存在"));

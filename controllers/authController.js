@@ -35,7 +35,7 @@ const sign_up = async (req, res, next) => {
     return next(appError("400", "Email 格式不正確", next));
   }
   const user_email = await User.findOne({ email }); //true=>data false=>null
-  console.log(user_email);
+
   if (user_email) {
     return next(appError(400, "信箱已註冊過~"));
   }
@@ -46,7 +46,6 @@ const sign_up = async (req, res, next) => {
     email,
     password,
     name,
-    sex: req.body.sex || "male",
   });
 
   generateSendJWT(newUser, 201, res);
@@ -62,7 +61,8 @@ const sign_in = async (req, res, next) => {
   ///output objected or Null
   //findOne{{email}}為解構值，find key為email的value
   //select(" + ")這次回傳password
-  if (user == null) {
+
+  if (!user) {
     return next(appError(400, "帳號輸入錯誤", next));
   }
 
