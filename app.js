@@ -17,6 +17,7 @@ const app = express();
 const swaggerUI = require("swagger-ui-express"); //swaggerui設定
 const swaggerFile = require("./swagger-output.json");
 const axios = require("axios");
+const rateLimit = require("express-rate-limit");
 
 //router引入
 const postsRouter = require("./routes/post");
@@ -26,6 +27,12 @@ const authRouter = require("./routes/auth");
 const { log } = require("console"); //將console.log更改為log，更簡潔易讀
 //mongodb引入
 require("./connections");
+const anotherLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, //10分鐘
+  max: 100, //請求100次
+  message: "Too many requests, please try again later!",
+});
+app.use(anotherLimiter);
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
@@ -36,7 +43,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
-app.use("/upload", uploadRouter);
+app.use("/upload", uploadRouter, anotherLimiter);
 
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 if (process.env.NODE_ENV != undefined) {

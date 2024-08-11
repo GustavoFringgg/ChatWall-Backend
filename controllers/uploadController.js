@@ -46,6 +46,7 @@ const uploadfile = async (req, res, next) => {
       res.send({
         status: true,
         user: user.name,
+        upload_fold: `${folder}`,
         fileUrl,
       });
     });
