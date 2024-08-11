@@ -140,7 +140,6 @@ const following = async (req, res, next) => {
 
 const userimage = async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
   if (!id) {
     return next(appError(400, "請提供圖片ID", next));
   }
@@ -156,8 +155,7 @@ const userimage = async (req, res, next) => {
       message: "圖片刪除成功",
     });
   } catch (err) {
-    console.error("圖片刪除失敗: ", err); // 輸出錯誤資訊
-    return next(appError(500, "圖片刪除失敗", next));
+    return next(appError(500, err.errors[0].reason, next));
   }
 };
 
