@@ -27,7 +27,10 @@ const uploadfile = async (req, res, next) => {
   }
 
   // 基於檔案的原始名稱建立一個 blob 物件
-  const blob = bucket.file(`images_test0811/${uuidv4()}.${file.originalname.split(".").pop()}`); //images=>可以更換資料夾名稱，以利不同用途
+  const folder = req.body.type === "user" ? "image_user" : "image_post";
+  console.log(folder);
+  const blob = bucket.file(`${folder}/${uuidv4()}.${file.originalname.split(".").pop()}`);
+  //images=>可以更換資料夾名稱，以利不同用途
   // 建立一個可以寫入 blob 的物件
   const blobStream = blob.createWriteStream();
 
