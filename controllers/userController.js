@@ -7,7 +7,8 @@ const handleSuccess = require("../service/handleSuccess");
 const mongoose = require("mongoose");
 const appError = require("../service/appError");
 const { generateSendJWT } = require("../service/auth");
-
+const firebaseAdmin = require("../service/firebase"); //使用firebase服務
+const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 const profile = async (req, res, next) => {
   const { name, sex, email, createdAt } = req.user;
   const localTime = createdAt.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
@@ -137,6 +138,29 @@ const following = async (req, res, next) => {
   });
 };
 
+const userimage = async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
+  if (!id) {
+    return next(appError(400, "請提供圖片ID", next));
+  }
+
+  const folder = "image_user"; // 根據上傳時的資料夾名稱
+  const filePath = `${folder}/${id}`;
+
+  try {
+    // 刪除圖片
+    await bucket.file(filePath).delete();
+    res.send({
+      status: true,
+      message: "圖片刪除成功",
+    });
+  } catch (err) {
+    console.error("圖片刪除失敗: ", err); // 輸出錯誤資訊
+    return next(appError(500, "圖片刪除失敗", next));
+  }
+};
+
 module.exports = {
   profile,
   updatePassword,
@@ -145,4 +169,5 @@ module.exports = {
   follow,
   unfollow,
   following,
+  userimage,
 };

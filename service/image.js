@@ -22,6 +22,6 @@ const upload = multer({
     } //確認檔案格式
     next(null, true);
   },
-}).any();
+}).any(); //增加req.files
 
 module.exports = upload; //處理圖片用

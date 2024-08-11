@@ -59,11 +59,6 @@ const uploadfile = async (req, res, next) => {
 
   // 將檔案的 buffer 寫入 blobStream
   blobStream.end(file.buffer);
-
-  // res.status(200).json({
-  //     status:"success",
-  //     imgUrl: response.data.link
-  // })
 };
 module.exports = {
   uploadfile,
