@@ -7,39 +7,27 @@ const { v4: uuidv4 } = require("uuid");
 const firebaseAdmin = require("../service/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
-const uploadcheck = async (req, res, next) => {
-  if (!req.files.length) {
-    return next(appError(400, "尚未上傳檔案", next));
-  }
-  const dimensions = sizeOf(req.files[0].buffer);
-  if (dimensions.width !== dimensions.height) {
-    return next(appError(400, "圖片長寬不符合 1:1 尺寸。", next));
-  }
-  const client = new ImgurClient({
-    clientId: process.env.IMGUR_CLIENTID,
-    clientSecret: process.env.IMGUR_CLIENT_SECRET,
-    refreshToken: process.env.IMGUR_REFRESH_TOKEN,
-  });
-  const response = await client.upload({
-    image: req.files[0].buffer.toString("base64"),
-    type: "base64",
-    album: process.env.IMGUR_ALBUM_ID,
-  });
-  res.status(200).json({
-    status: true,
-    imgUrl: response.data.link,
-  });
-};
-
 const uploadfile = async (req, res, next) => {
+  const { user } = req;
+  //req.files=> [ {fieldname:"file" , originalanme:'0811.jpg'..buffer}]
   if (!req.files.length) {
     return next(appError(400, "尚未上傳檔案", next));
+  }
+
+  if (req.files.length > 1) {
+    return next(appError(400, "請一次上傳一個檔案", next));
   }
   // 取得上傳的檔案資訊列表裡面的第一個檔案
   const file = req.files[0];
 
+  const dimensions = sizeOf(req.files[0].buffer); //確認檔案大小
+  //dimensions:{ height: 845, width: 1580, type: 'jpg' }
+  if (dimensions.width !== dimensions.height) {
+    return next(appError(400, "圖片長寬不符合 1:1 尺寸。", next));
+  }
+
   // 基於檔案的原始名稱建立一個 blob 物件
-  const blob = bucket.file(`images/${uuidv4()}.${file.originalname.split(".").pop()}`); //images=>可以更換資料夾名稱，以利不同用途
+  const blob = bucket.file(`images_test0811/${uuidv4()}.${file.originalname.split(".").pop()}`); //images=>可以更換資料夾名稱，以利不同用途
   // 建立一個可以寫入 blob 的物件
   const blobStream = blob.createWriteStream();
 
@@ -53,6 +41,8 @@ const uploadfile = async (req, res, next) => {
     // 取得檔案的網址
     blob.getSignedUrl(config, (err, fileUrl) => {
       res.send({
+        status: true,
+        user: user.name,
         fileUrl,
       });
     });
@@ -72,6 +62,5 @@ const uploadfile = async (req, res, next) => {
   // })
 };
 module.exports = {
-  uploadcheck,
   uploadfile,
 };

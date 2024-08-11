@@ -30,7 +30,6 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
 
   const currentUser = await User.findById(decoded.id).select("+email +createdAt");
   //currentUser =>整包會員資料
-  console.log(currentUser);
 
   if (!currentUser) {
     return next(appError(401, "用戶不存在"));

@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" }); //引入config
-const admin = require("firebase-admin"); //firebase的橋樑
+const admin = require("firebase-admin"); //nodejs 跟firebase的橋樑
 const config = {
   type: process.env.FIREBASE_TYPE,
   project_id: process.env.FIREBASE_PROJECT_ID,
