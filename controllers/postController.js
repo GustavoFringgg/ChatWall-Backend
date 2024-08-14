@@ -22,6 +22,10 @@ const getPosts = async (req, res, next) => {
       path: "comments",
       select: "comment user",
     })
+    .populate({
+      path: "likes",
+      select: "name",
+    })
     .sort(timeSort)
     .limit(size);
   if (post.length !== 0) {
@@ -112,6 +116,10 @@ const getonePost = async (req, res, next) => {
     .populate({
       path: "comments",
       select: "comment",
+    })
+    .populate({
+      path: "likes",
+      select: "name",
     });
 
   if (post) {

@@ -16,8 +16,9 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
   // 驗證 token 正確性
   const decoded = await new Promise((resolve, reject) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+      console.log(err);
       if (err) {
-        reject(err);
+        return next(appError(400, "token效期過期請重新登入"));
       } else {
         resolve(payload);
       }
