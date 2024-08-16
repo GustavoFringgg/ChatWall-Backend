@@ -88,6 +88,9 @@ const postcomment = async (req, res, next) => {
   const user = req.user.id;
   const post = req.params.id;
   const { comment } = req.body;
+  if (!comment) {
+    return next(appError(400, "格式錯誤"));
+  }
 
   if (!(await Post.findOne({ _id: post }))) {
     return next(appError(400, "沒有此貼文"));
