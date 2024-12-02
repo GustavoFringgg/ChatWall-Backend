@@ -28,15 +28,17 @@ const postSchema = new mongoose.Schema(
   },
   {
     versionKey: false,
+    //如virtual欄位需加此兩行，讓model掛上去虛擬欄位
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
 
 postSchema.virtual("comments", {
+  //使用populate才會顯示，virtual跟popolate缺一不可
   ref: "Commentmodel", //comments collection
   foreignField: "post",
-  localField: "_id",
+  localField: "_id", //post id 抓取commentmodel的post欄位id
 });
 
 const Post = mongoose.model("Postmodel", postSchema);

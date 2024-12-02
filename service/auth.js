@@ -23,10 +23,10 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
       }
     });
   });
-
+  //decoded : payload{ mongodb_id,iat(製造日期),exp(過期日期) }
   if (!decoded || !decoded.id) {
     return next(appError(401, "Token 無效"));
-  } // decoded=>token物件:{ id , iat,exp}
+  }
 
   const currentUser = await User.findById(decoded.id).select("+email +createdAt");
   //currentUser =>整包會員資料
@@ -36,7 +36,6 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
   }
 
   req.user = currentUser;
-
   next();
 });
 // 產生 JWT token

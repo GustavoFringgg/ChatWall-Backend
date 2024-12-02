@@ -26,9 +26,11 @@ const commentSchema = new mongoose.Schema(
   }
 );
 commentSchema.pre(/^find/, function (next) {
+  //pre mongoose語法:前置器
   this.populate({
+    //this=commentSchema的document
     path: "user",
-    select: "name",
+    select: "name id createdAt", //將在comment底下的user欄位額外展開name欄位
   });
 
   next();

@@ -35,8 +35,8 @@ const anotherLimiter = rateLimit({
 app.use(anotherLimiter);
 app.use(cors());
 app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); //解析req.body
+app.use(express.urlencoded({ extended: false })); //解析req.body
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -98,6 +98,7 @@ app.use((err, req, res, next) => {
   }
   // production(Node_env==dev直接進上一段if)
   if (err.name === "ValidationError") {
+    //mongoose自訂錯誤
     err.message = "資料欄位未填寫正確，請重新輸入！";
     err.statusCode = 400;
     err.isOperational = true;

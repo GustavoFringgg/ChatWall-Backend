@@ -8,7 +8,7 @@ const appError = require("../service/appError");
 const getPosts = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
-
+  //匹配時會忽略大小寫差異
   let size = 50;
   if (req.query.size) {
     size = parseInt(req.query.size) > 50 ? 50 : parseInt(req.query.size);

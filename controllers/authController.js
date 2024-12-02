@@ -47,9 +47,9 @@ const sign_up = async (req, res, next) => {
     password,
     name,
   });
-
+  console.log(newUser);
   generateSendJWT(newUser, 201, res);
-};
+}; //newUser會夾帶monogodb的_id物件
 
 const sign_in = async (req, res, next) => {
   const { email, password } = req.body;

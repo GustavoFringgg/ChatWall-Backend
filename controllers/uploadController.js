@@ -30,8 +30,9 @@ const uploadfile = async (req, res, next) => {
   const folder = req.body.type === "user" ? "image_user" : "image_post";
   const blob = bucket.file(`${folder}/${uuidv4()}.${file.originalname.split(".").pop()}`);
   //images=>可以更換資料夾名稱，以利不同用途
-  // 建立一個可以寫入 blob 的物件
+
   const blobStream = blob.createWriteStream();
+  // 建立一個可以寫入 blob 的物件/管道
 
   // 監聽上傳狀態，當上傳完成時，會觸發 finish 事件
   blobStream.on("finish", () => {
