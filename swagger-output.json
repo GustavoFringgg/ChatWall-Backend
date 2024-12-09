@@ -38,19 +38,19 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "王小明"
+                  "example": "testUser"
                 },
                 "email": {
                   "type": "string",
-                  "example": "AA@gmail.com"
+                  "example": "testUser@mail.com"
                 },
                 "password": {
                   "type": "string",
-                  "example": "Aa123456"
+                  "example": "123456789A"
                 },
                 "confirmPassword": {
                   "type": "string",
-                  "example": "Aa123456"
+                  "example": "123456789A"
                 }
               },
               "required": [
@@ -63,8 +63,168 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "token"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "testUser"
+                    }
+                  }
+                },
+                "Issued_At": {
+                  "type": "string",
+                  "example": "2024/12/2 下午11:46:41"
+                },
+                "Expires_At": {
+                  "type": "string",
+                  "example": "2024/12/4 下午11:46:41"
+                },
+                "Expires_Day": {
+                  "type": "number",
+                  "example": 2
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Created"
+          },
+          "402": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "欄位未填寫正確！"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 402
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Payment Required"
+          },
+          "409": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "信箱已註冊過~"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 409
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "examples": {
+                          "type": "array",
+                          "example": [
+                            "暱稱不能少於兩個字元",
+                            "密碼需包含至少一個字母和一個數字,並且至少6個字符長",
+                            "密碼需介於 6-18 字元之間",
+                            "密碼不一致！",
+                            "Email 格式不正確"
+                          ],
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 422
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Unprocessable Entity"
           }
         }
       }
@@ -102,8 +262,109 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "token"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "testUser"
+                    }
+                  }
+                },
+                "Issued_At": {
+                  "type": "string",
+                  "example": "2024/12/9 下午7:41:35"
+                },
+                "Expires_At": {
+                  "type": "string",
+                  "example": "2024/12/11 下午7:41:35"
+                },
+                "Expires_Day": {
+                  "type": "number",
+                  "example": 2
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Created"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "帳號或密碼輸入錯誤"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 401
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "402": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "帳號密碼不可為空"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 402
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Payment Required"
           }
         }
       }
@@ -116,6 +377,11 @@
         "summary": "取得所有貼文",
         "description": "取得所有貼文",
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "keyword",
             "in": "query",
@@ -477,13 +743,16 @@
         }
       }
     },
-    "/upload/filecheck": {
-      "post": {
-        "tags": [
-          "Upload"
-        ],
+    "/users/userimage/{id}": {
+      "delete": {
         "description": "",
         "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "authorization",
             "in": "header",
