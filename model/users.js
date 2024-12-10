@@ -16,7 +16,10 @@ const userSchema = new mongoose.Schema(
       // select為false代表建立這個屬性，但不會被find()找出來而具保護效果
       // select作用範圍僅限於Node.js後端的查詢，對於其他非Node.js環境或工具可能不具有效性
     },
-    photo: String,
+    photo: {
+      type: String,
+      default: "https://firebasestorage.googleapis.com/v0/b/metawall-a2771.appspot.com/o/local%2Fuser_logo.jpg?alt=media&token=a1f0f697-3892-4ba4-8712-21c71ba7d7af",
+    },
     sex: {
       type: String,
       enum: ["male", "female"],

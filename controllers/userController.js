@@ -159,6 +159,10 @@ const userimage = async (req, res, next) => {
   }
 };
 
+const tokencheck = (req, res, next) => {
+  res.status(200).json({ message: "Token 驗證成功", user: req.user });
+};
+
 module.exports = {
   profile,
   updatePassword,
@@ -168,4 +172,5 @@ module.exports = {
   unfollow,
   following,
   userimage,
+  tokencheck,
 };
