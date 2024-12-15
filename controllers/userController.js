@@ -159,8 +159,12 @@ const userimage = async (req, res, next) => {
   }
 };
 
-const tokencheck = (req, res, next) => {
-  res.status(200).json({ message: "Token 驗證成功", user: req.user });
+const tokencheck = async (req, res, next) => {
+  try {
+    res.status(200).json({ message: "Token 驗證成功", user: req.user });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

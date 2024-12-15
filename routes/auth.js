@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const handleErrorAsync = require("../service/handleErrorAsync");
 const authController = require("../controllers/authController");
-
 router.post(
   "/sign_Up",
   [handleErrorAsync(authController.sign_up)]

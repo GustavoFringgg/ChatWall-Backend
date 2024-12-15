@@ -766,6 +766,23 @@
         }
       }
     },
+    "/users/checkout": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/upload/file": {
       "post": {
         "tags": [

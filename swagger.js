@@ -1,5 +1,7 @@
 const swaggerAutogen = require("swagger-autogen")(); //引入swagger
-
+const swaggerOptions = {
+  autoHeaders: false, // 禁止自動添加 headers
+};
 const doc = {
   //會有info物件
   info: {

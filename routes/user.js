@@ -13,5 +13,5 @@ router
   .get("/following", [isAuth, handleErrorAsync(userController.following)] /*** #swagger.tags=['Users-會員']*/) //取得個人追蹤名單
   .delete("/:id/unfollow", [isAuth, handleErrorAsync(userController.unfollow)] /*** #swagger.tags=['Users-會員']*/) //取消追蹤朋友
   .delete("/userimage/:id", [isAuth, handleErrorAsync(userController.userimage)])
-  .get("/checkout", [isAuth, userController.tokencheck]);
+  .get("/checkout", [isAuth, handleErrorAsync(userController.tokencheck)]);
 module.exports = router;

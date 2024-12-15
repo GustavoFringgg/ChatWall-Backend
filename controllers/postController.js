@@ -16,7 +16,7 @@ const getPosts = async (req, res, next) => {
   const post = await Post.find(keyword)
     .populate({
       path: "user", //因為Post.find，所以指向Post model裡頭的user欄位
-      select: "name photo email sex",
+      select: "name photo email sex image",
     })
     .populate({
       path: "comments",
@@ -28,16 +28,17 @@ const getPosts = async (req, res, next) => {
     })
     .sort(timeSort)
     .limit(size);
+  console.log("post", post);
   if (post.length !== 0) {
     return handleSuccess(res, post, `目前共有${post.length}則貼文`);
-  } else return handleSuccess(res, "尚未有任何貼文");
+  } else return handleSuccess(res, "尚未找到任何貼文", []);
 };
 
 //****post****
 const postPosts = async (req, res, next) => {
-  const { content } = req.body;
+  const { content, image } = req.body;
   if (content != undefined && content.trim()) {
-    const new_post = await Post.create({ user: req.user._id, content });
+    const new_post = await Post.create({ user: req.user._id, content, image });
     return handleSuccess(res, "新增貼文成功", new_post);
   } else {
     return next(appError(400, "你沒有填寫 content 資料"));
