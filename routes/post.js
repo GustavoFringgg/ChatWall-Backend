@@ -78,7 +78,7 @@ router
   )
   .post(
     "/:id/likes",
-    [isAuth, handleErrorAsync(postController.likspost)]
+    [isAuth, handleErrorAsync(postController.likepost)]
     /** #swagger.tags=['Posts-貼文']
      * #swagger.summary = '新增一則貼文的讚'
      * #swagger.description='新增一則貼文的讚'*/

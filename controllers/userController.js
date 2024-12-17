@@ -40,7 +40,7 @@ const updatePassword = async (req, res, next) => {
   const user = await User.findByIdAndUpdate(req.user.id, {
     password: newPassword,
   });
-  generateSendJWT(user, 200, res);
+  generateSendJWT(user, res);
 };
 
 const patchprofile = async (req, res, next) => {

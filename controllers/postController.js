@@ -8,7 +8,7 @@ const appError = require("../service/appError");
 const getPosts = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
-  //匹配時會忽略大小寫差異
+  //"i" = 匹配時會忽略大小寫差異
   let size = 50;
   if (req.query.size) {
     size = parseInt(req.query.size) > 50 ? 50 : parseInt(req.query.size);
@@ -28,7 +28,7 @@ const getPosts = async (req, res, next) => {
     })
     .sort(timeSort)
     .limit(size);
-  console.log("post", post);
+
   if (post.length !== 0) {
     return handleSuccess(res, post, `目前共有${post.length}則貼文`);
   } else return handleSuccess(res, "尚未找到任何貼文", []);
@@ -45,17 +45,23 @@ const postPosts = async (req, res, next) => {
   }
 };
 
-const likspost = async (req, res, next) => {
+const likepost = async (req, res, next) => {
   const _id = req.params.id;
+  console.log(_id);
   if (!(await Post.findById({ _id: _id }))) {
     return next(appError(400, "沒有此貼文"));
   }
   await Post.findOneAndUpdate({ _id }, { $addToSet: { likes: req.user.id } });
-  res.status(201).json({
-    status: true,
+  const data = {
     postId: _id,
     userId: req.user.id,
-  });
+  };
+  handleSuccess(res, "貼文按讚成功", data);
+  // res.status(201).json({
+  //   status: true,
+  //   postId: _id,
+  //   userId: req.user.id,
+  // });
 };
 
 const deletelikepost = async (req, res, next) => {
@@ -64,11 +70,17 @@ const deletelikepost = async (req, res, next) => {
     return next(appError(400, "沒有此貼文"));
   }
   await Post.findOneAndUpdate({ _id }, { $pull: { likes: req.user.id } });
-  res.status(201).json({
-    status: true,
+  const data = {
     postId: _id,
     userId: req.user.id,
-  });
+  };
+  handleSuccess(res, "取消貼文按讚成功", data);
+
+  // res.status(201).json({
+  //   status: true,
+  //   postId: _id,
+  //   userId: req.user.id,
+  // });
 };
 
 const getuserpost = async (req, res, next) => {
@@ -77,12 +89,17 @@ const getuserpost = async (req, res, next) => {
     path: "comments",
     select: "comment user",
   });
-
-  res.status(200).json({
-    status: true,
+  const data = {
     results: posts.length,
     posts,
-  });
+  };
+  handleSuccess(res, "取得使用者貼文", data);
+
+  // res.status(200).json({
+  //   status: true,
+  //   results: posts.length,
+  //   posts,
+  // });
 };
 
 const postcomment = async (req, res, next) => {
@@ -102,12 +119,17 @@ const postcomment = async (req, res, next) => {
     user,
     comment,
   });
-  res.status(201).json({
-    status: true,
-    data: {
-      comments: newComment,
-    },
-  });
+  const data = {
+    comments: newComment,
+  };
+
+  handleSuccess(res, "新增留言成功", data);
+  // res.status(201).json({
+  //   status: true,
+  //   data: {
+  //     comments: newComment,
+  //   },
+  // });
 };
 
 const getonePost = async (req, res, next) => {
@@ -138,7 +160,7 @@ const getonePost = async (req, res, next) => {
 module.exports = {
   getPosts,
   postPosts,
-  likspost,
+  likepost,
   deletelikepost,
   getuserpost,
   postcomment,

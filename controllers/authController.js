@@ -47,8 +47,7 @@ const sign_up = async (req, res, next) => {
     password,
     name,
   });
-  console.log("newUser", newUser);
-  generateSendJWT(newUser, 201, res);
+  generateSendJWT(newUser, res);
 }; //newUser會夾帶monogodb的_id物件
 
 const sign_in = async (req, res, next) => {
@@ -73,7 +72,7 @@ const sign_in = async (req, res, next) => {
   if (!auth) {
     return next(appError(401, "帳號或密碼輸入錯誤", next));
   }
-  generateSendJWT(user, 200, res);
+  generateSendJWT(user, res);
 };
 
 module.exports = { sign_in, sign_up };

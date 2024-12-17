@@ -10,13 +10,11 @@ process.on("uncaughtException", (e) => {
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const mongoose = require("mongoose");
+const logger = require("morgan"); //加入日誌
 const cors = require("cors");
 const app = express();
 const swaggerUI = require("swagger-ui-express"); //swaggerui設定
 const swaggerFile = require("./swagger-output.json");
-const axios = require("axios");
 const rateLimit = require("express-rate-limit");
 
 //router引入

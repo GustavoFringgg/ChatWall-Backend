@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const appError = require("../service/appError");
 const handleErrorAsync = require("../service/handleErrorAsync");
+const handleSuccess = require("../service/handleSuccess");
 const User = require("../model/users");
 const isAuth = handleErrorAsync(async (req, res, next) => {
   // 確認 token 是否存在
@@ -39,7 +40,7 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
   next();
 });
 // 產生 JWT token
-const generateSendJWT = (user, statusCode, res) => {
+const generateSendJWT = (user, res) => {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_DAY,
   });
@@ -50,10 +51,7 @@ const generateSendJWT = (user, statusCode, res) => {
   const createtime = decoded.iat;
   const expiretime = decoded.exp;
   const days = (expiretime - createtime) / (24 * 60 * 60);
-
-  user.password = undefined;
-  res.status(statusCode).json({
-    status: "success",
+  const data = {
     user: {
       token,
       name: user.name,
@@ -61,7 +59,19 @@ const generateSendJWT = (user, statusCode, res) => {
     Issued_At: issuedAt,
     Expires_At: expiresAt,
     Expires_Day: days,
-  });
+  };
+  user.password = undefined;
+  handleSuccess(res, "Token核發", data);
+  // res.status(statusCode).json({
+  //   status: "success",
+  //   user: {
+  //     token,
+  //     name: user.name,
+  //   },
+  //   Issued_At: issuedAt,
+  //   Expires_At: expiresAt,
+  //   Expires_Day: days,
+  // });
 };
 
 module.exports = {
