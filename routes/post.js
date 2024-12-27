@@ -29,7 +29,7 @@ router
         }
         #swagger.parameters['timeSort'] = {
             in: 'query',
-            description: '發文時間排序方式，預設 desc 降冪排序，asc=遠到近，desc=近到遠',
+            description: '發文時間排序方式，預 設 desc 降冪排序，asc=遠到近，desc=近到遠',
             required: false,
             type: 'string',
             enum: ['asc', 'desc']

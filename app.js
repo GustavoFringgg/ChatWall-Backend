@@ -1,5 +1,4 @@
-//出現重大錯誤時，沒有被try cash捕捉，就會觸發uncaughtException並捕捉
-////監聽器通常放在最頂端，確保應用程式在啟動時就能捕捉到任何可能的異常*
+//處理未捕捉的同步錯誤
 process.on("uncaughtException", (e) => {
   // 記錄錯誤下來，等到服務都處理完後，停掉該 process
   console.error("系統錯誤!"); //幾點幾分出錯的
@@ -10,21 +9,20 @@ process.on("uncaughtException", (e) => {
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const logger = require("morgan"); //加入日誌
+const logger = require("morgan");
 const cors = require("cors");
 const app = express();
-const swaggerUI = require("swagger-ui-express"); //swaggerui設定
+const swaggerUI = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json");
 const rateLimit = require("express-rate-limit");
 
-//router引入
 const postsRouter = require("./routes/post");
 const usersRouter = require("./routes/user");
 const uploadRouter = require("./routes/upload");
 const authRouter = require("./routes/auth");
-const { log } = require("console"); //將console.log更改為log，更簡潔易讀
-//mongodb引入
-require("./connections");
+const { log } = require("console");
+require("./connections/index");
+require("./connections/passport");
 const anotherLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, //10分鐘
   max: 100, //請求100次
@@ -42,15 +40,15 @@ app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
 app.use("/upload", uploadRouter, anotherLimiter);
-
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
+
 if (process.env.NODE_ENV != undefined) {
   log(process.env.NODE_ENV + "模式開啟");
 } else {
-  log("模式開啟錯誤，請改用npm run start:dev 執行開發環境");
+  return log("模式開啟錯誤，請改用npm run start:dev 執行開發環境");
 }
 
-//404錯誤處理 當上述router都沒有執行，就會跑404 wrong router
+//router 404錯誤處理
 app.use((req, res, next) => {
   res.status(404).send({
     status: false,
@@ -58,18 +56,16 @@ app.use((req, res, next) => {
   });
 });
 
-// express 錯誤處理
 //正式環境錯誤function
 const resErrorProd = (err, res) => {
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: false,
+      statusCode: err.statusCode,
       message: err.message,
     });
   } else {
-    // log 紀錄
     console.error("出現重大錯誤", err);
-    // 送出罐頭預設訊息
     res.status(500).json({
       status: "error",
       message: "系統錯誤，請恰系統管理員",
@@ -82,15 +78,14 @@ const resErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     message: err.message,
     error: err,
-    stack: err.stack, //在dev模式下，會顯示err.stack堆疊錯誤訊息
+    stack: err.stack,
   });
 };
 
-//*****負責接收從各處傳過來的 err 資訊 aka垃圾集中場*****
+//*接收從各處傳過來的 err 資訊 *
 app.use((err, req, res, next) => {
   // dev
   err.statusCode = err.statusCode || 500; //有帶statusCode以statusCode宣告，否則以500進function
-
   if (process.env.NODE_ENV === "dev") {
     return resErrorDev(err, res);
   }
@@ -105,14 +100,11 @@ app.use((err, req, res, next) => {
   return resErrorProd(err, res);
 });
 
-// 透過process.on註冊監聽，處理未捕捉的promise
+//處理未捕捉的非同步的錯誤
 process.on("unhandledRejection", (reason, promise) => {
   console.error("未捕捉到的 rejection:", promise, "原因：", reason);
   process.exit(1);
 });
-
-/*在Express應用程式中使用process.on()方法設置事件監聽器，
-進行監聽和處理各種事件，例如處理未捕獲的異常、處理程式即將退出等情況*/
 
 /*在Node.js中，當一個promise被拒絕並且未被處理時，就會觸發"unhandledRejection"。
 "unhandledRejection"監聽器通常放在最底端，原因如下：

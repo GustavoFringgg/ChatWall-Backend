@@ -167,6 +167,13 @@ const tokencheck = async (req, res, next) => {
   }
 };
 
+const googleapis = async (req, res, next) => {
+  // const user = await User.findById(req.user.id).select("+email");
+  console.log("googleapit:req.user", req.user);
+  // console.log("googleapit:user", user);
+  generateSendJWT(req.user, res);
+};
+
 module.exports = {
   profile,
   updatePassword,
@@ -177,4 +184,5 @@ module.exports = {
   following,
   userimage,
   tokencheck,
+  googleapis,
 };

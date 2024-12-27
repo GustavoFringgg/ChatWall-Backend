@@ -30,7 +30,7 @@ commentSchema.pre(/^find/, function (next) {
   this.populate({
     //this=commentSchema的document
     path: "user",
-    select: "name id createdAt", //將在comment底下的user欄位額外展開name欄位
+    select: "name id createdAt photo", //將在comment底下的user欄位額外展開name欄位
   });
 
   next();

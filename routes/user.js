@@ -3,6 +3,8 @@ const router = express.Router();
 const handleErrorAsync = require("../service/handleErrorAsync"); //處理全域的catch
 const { isAuth } = require("../service/auth");
 const userController = require("../controllers/userController");
+const passport = require("passport");
+const User = require("../model/users");
 
 router
   .patch("/updatePassword", [isAuth, handleErrorAsync(userController.updatePassword)] /*** #swagger.tags=['Users-會員']*/) //重設密碼
@@ -13,5 +15,8 @@ router
   .get("/following", [isAuth, handleErrorAsync(userController.following)] /*** #swagger.tags=['Users-會員']*/) //取得個人追蹤名單
   .delete("/:id/unfollow", [isAuth, handleErrorAsync(userController.unfollow)] /*** #swagger.tags=['Users-會員']*/) //取消追蹤朋友
   .delete("/userimage/:id", [isAuth, handleErrorAsync(userController.userimage)])
-  .get("/checkout", [isAuth, handleErrorAsync(userController.tokencheck)]);
+  .get("/checkout", [isAuth, handleErrorAsync(userController.tokencheck)])
+  .get("/google", passport.authenticate("google", { scope: ["email", "profile"] }))
+  .get("/google/callback", passport.authenticate("google", { session: false }), handleErrorAsync(userController.googleapis))
+  .post("/googleClient/callback", passport.authenticate("google", { session: false }), handleErrorAsync(userController.googleapis));
 module.exports = router;

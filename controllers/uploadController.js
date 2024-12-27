@@ -8,23 +8,18 @@ const firebaseAdmin = require("../service/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
 const uploadfile = async (req, res, next) => {
-  const { user } = req;
+  const { user, files } = req;
+
   //req.files=> [ {fieldname:"file" , originalanme:'0811.jpg'..buffer}]
-  if (!req.files.length) {
+  if (!files.length) {
     return next(appError(400, "尚未上傳檔案", next));
   }
 
-  if (req.files.length > 1) {
+  if (files.length > 1) {
     return next(appError(400, "請一次上傳一個檔案", next));
   }
   // 取得上傳的檔案資訊列表裡面的第一個檔案
-  const file = req.files[0];
-
-  const dimensions = sizeOf(req.files[0].buffer); //確認檔案大小
-  //dimensions:{ height: 845, width: 1580, type: 'jpg' }
-  if (dimensions.width !== dimensions.height) {
-    return next(appError(400, "圖片長寬不符合 1:1 尺寸。", next));
-  }
+  const file = files[0];
 
   // 基於檔案的原始名稱建立一個 blob 物件
   const folder = req.body.type === "user" ? "image_user" : "image_post";
@@ -54,7 +49,7 @@ const uploadfile = async (req, res, next) => {
 
   // 如果上傳過程中發生錯誤，會觸發 error 事件
   blobStream.on("error", (err) => {
-    res.status(500).send("上傳失敗");
+    return next(appError(500, "上傳失敗", next));
   });
 
   // 將檔案的 buffer 寫入 blobStream
