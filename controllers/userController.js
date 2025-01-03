@@ -44,12 +44,23 @@ const updatePassword = async (req, res, next) => {
 };
 
 const patchprofile = async (req, res, next) => {
-  const { name, sex } = req.body;
-  const updateuserinfo = await User.findByIdAndUpdate(req.user.id, { name, sex }, { new: true, runValidators: true });
+  let { name, sex, photo } = req.body;
+  if (sex === "男") {
+    sex = "male";
+  } else {
+    sex = "female";
+  }
+  console.log("name", name);
+  console.log("sex", sex);
+  console.log("photo", photo);
+
+  console.log("戳第二次");
+  const updateuserinfo = await User.findByIdAndUpdate(req.user.id, { name, sex, photo }, { new: true, runValidators: true });
+  console.log("updateuserinfo", updateuserinfo);
   if (!updateuserinfo) {
     return next(appError(404, "用戶不存在"));
   }
-  return handleSuccess(res, `${req.user.name}的資料已被更新為${updateuserinfo.name}`, updateuserinfo);
+  return handleSuccess(res, `資料已被更新為${updateuserinfo.name}`, updateuserinfo);
 };
 
 const getLikeList = async (req, res, next) => {

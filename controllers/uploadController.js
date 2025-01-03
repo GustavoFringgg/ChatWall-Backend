@@ -40,7 +40,6 @@ const uploadfile = async (req, res, next) => {
     blob.getSignedUrl(config, (err, fileUrl) => {
       res.send({
         status: true,
-        user: user.name,
         upload_fold: `${folder}`,
         fileUrl,
       });

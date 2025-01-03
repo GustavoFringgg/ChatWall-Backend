@@ -38,7 +38,7 @@ const getPosts = async (req, res, next) => {
 const postPosts = async (req, res, next) => {
   const { content, image } = req.body;
   if (content != undefined && content.trim()) {
-    const new_post = await Post.create({ user: req.user._id, content, image });
+    const new_post = await Post.create({ user: req.user.id, content, image });
     return handleSuccess(res, "新增貼文成功", new_post);
   } else {
     return next(appError(400, "你沒有填寫 content 資料"));

@@ -47,7 +47,7 @@ router
   )
   .post(
     "/",
-    [isAuth, handleErrorAsync(postController.postPosts)]
+    [isAuth(false), handleErrorAsync(postController.postPosts)]
     /** #swagger.tags=['Posts-貼文']
         #swagger.summary = '新增貼文'
         #swagger.description='新增貼文'
@@ -71,7 +71,7 @@ router
   )
   .post(
     "/:id/comment",
-    [isAuth, handleErrorAsync(postController.postcomment)]
+    [isAuth(false), handleErrorAsync(postController.postcomment)]
     /** #swagger.tags=['Posts-貼文']
      * #swagger.summary = '取新增一則貼文的留言'
      * #swagger.description='新增一則貼文的留言'*/
