@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Comment = require("./comments");
 const postSchema = new mongoose.Schema(
   {
     user: {
@@ -41,5 +42,12 @@ postSchema.virtual("comments", {
   localField: "_id", //post id 抓取commentmodel的post欄位id
 });
 
+postSchema.pre(/^findOneAndDelete/, async function (next) {
+  // const query = this; // `this` 是查詢物件
+  const query = this.getQuery(); // `this` 是查詢物件
+  const commentreturn = await Comment.deleteMany({ post: query._id });
+  console.log("commentreturn", commentreturn);
+  next();
+});
 const Post = mongoose.model("Postmodel", postSchema);
 module.exports = Post;

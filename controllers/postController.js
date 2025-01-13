@@ -16,7 +16,6 @@ const getPosts = async (req, res, next) => {
   const post = await Post.find(keyword)
     .populate({
       path: "user", //因為Post.find，所以指向Post model裡頭的user欄位
-      select: "name photo email sex image",
     })
     .populate({
       path: "comments",
@@ -28,7 +27,7 @@ const getPosts = async (req, res, next) => {
     })
     .sort(timeSort)
     .limit(size);
-
+  console.log("post取得貼文", post);
   if (post.length !== 0) {
     return handleSuccess(res, post, `目前共有${post.length}則貼文`);
   } else return handleSuccess(res, "尚未找到任何貼文", []);
@@ -47,7 +46,7 @@ const postPosts = async (req, res, next) => {
 
 const likepost = async (req, res, next) => {
   const _id = req.params.id;
-  console.log(_id);
+
   if (!(await Post.findById({ _id: _id }))) {
     return next(appError(400, "沒有此貼文"));
   }
@@ -64,16 +63,37 @@ const likepost = async (req, res, next) => {
   // });
 };
 
+const deletePostWithComments = async (req, res, next) => {
+  const _id = req.params.id;
+  console.log("delepostid", _id);
+  try {
+    const post = await Post.findById({ _id: _id });
+    console.log("delepost", post);
+    if (!post) {
+      console.log("找不到此貼文");
+      return next(appError(400, "沒有此貼文"));
+    }
+    const deletedata = await Post.findByIdAndDelete(_id);
+    console.log("deletedata", deletedata);
+    handleSuccess(res, "刪除文章成功", post);
+  } catch (error) {
+    console.log("error:", error);
+  }
+};
 const deletelikepost = async (req, res, next) => {
   const _id = req.params.id;
   if (!(await Post.findById({ _id: _id }))) {
     return next(appError(400, "沒有此貼文"));
   }
-  await Post.findOneAndUpdate({ _id }, { $pull: { likes: req.user.id } });
+  const res_data = await Post.findOneAndUpdate({ _id }, { $pull: { likes: req.user.id } }, { new: true }).populate({
+    path: "user",
+    select: "name photo",
+  });
   const data = {
     postId: _id,
     userId: req.user.id,
   };
+  console.log("deletelikepost", res_data);
   handleSuccess(res, "取消貼文按讚成功", data);
 
   // res.status(201).json({
@@ -84,16 +104,27 @@ const deletelikepost = async (req, res, next) => {
 };
 
 const getuserpost = async (req, res, next) => {
+  const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
+  const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
+
   const user = req.params.id;
-  const posts = await Post.find({ user }).populate({
-    path: "comments",
-    select: "comment user",
-  });
-  const data = {
-    results: posts.length,
-    posts,
-  };
-  handleSuccess(res, "取得使用者貼文", data);
+
+  const posts = await Post.find({ user, ...keyword })
+    .populate({
+      path: "user",
+      select: "name photo email sex image",
+    })
+    .populate({
+      path: "comments",
+      select: "comment user",
+    })
+    .populate({
+      path: "likes",
+      select: "name",
+    })
+    .sort(timeSort);
+  console.log("postConrol", posts);
+  handleSuccess(res, posts, "取得使用者貼文");
 
   // res.status(200).json({
   //   status: true,
@@ -137,7 +168,7 @@ const getonePost = async (req, res, next) => {
   let post = await Post.findOne({ _id: id })
     .populate({
       path: "user",
-      select: "name",
+      select: "name photo",
     })
     .populate({
       path: "comments",
@@ -147,11 +178,11 @@ const getonePost = async (req, res, next) => {
       path: "likes",
       select: "name",
     });
-
+  console.log("取得特定貼文的資料", post);
   if (post) {
     return res.status(200).json({
       status: true,
-      data: post,
+      message: [post],
     });
   }
   return next(appError(404, "無此 post ID"));
@@ -165,4 +196,5 @@ module.exports = {
   getuserpost,
   postcomment,
   getonePost,
+  deletePostWithComments,
 };

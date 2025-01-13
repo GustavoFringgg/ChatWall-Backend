@@ -9,34 +9,35 @@ const appError = require("../service/appError");
 const { generateSendJWT } = require("../service/auth");
 const firebaseAdmin = require("../service/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
+
 const profile = async (req, res, next) => {
-  const { name, sex, email, createdAt } = req.user;
-  const localTime = createdAt.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
-  res.status(200).json({
-    status: true,
-    user: `這是${name}的個人頁面`,
-    email: email,
-    sex: sex,
-    message: `帳號建立時間:${localTime}`,
-  });
+  const id = req.params.id;
+  console.log(id);
+  const userInfo = await User.findOne({ _id: id });
+  // const { name, sex, email, createdAt } = req.user;
+  // const localTime = createdAt.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
+  console.log("userInfo", userInfo);
+  handleSuccess(res, "取得個人資料", userInfo);
 };
 
 const updatePassword = async (req, res, next) => {
-  const { password, confirmPassword } = req.body;
-  if (password !== confirmPassword) {
+  let { oldPassword, newPassword, confirmPassword } = req.body;
+
+  if (newPassword !== confirmPassword) {
     return next(appError(400, "密碼不一致！", next));
   }
-  //正規表達式
-  //1.^(?=.*[A-Za-z]) 確保密碼中至少包含一個字母。
-  //2.(?=.*\d) 確保密碼中至少包含一個數字。
-  //3.[A-Za-z\d]{8,}$ 確保密碼長度至少為8個字符。
-  if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+  const userInfo = await User.findOne({ _id: req.user.id }).select("+password");
+  if (!userInfo) {
+    return next(appError(401, "查無此人", next));
+  }
+  const auth = await bcrypt.compare(oldPassword, userInfo.password);
+  if (!auth) {
+    return next(appError(401, "密碼輸入錯誤", next));
+  }
+  if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(newPassword)) {
     return next(appError(400, "密碼需包含至少一個字母和一個數字,並且至少8個字符長"));
   }
-
-  //開始加密
-  const newPassword = await bcrypt.hash(password, 12);
-  //取出資料庫ID比對
+  newPassword = await bcrypt.hash(newPassword, 12);
   const user = await User.findByIdAndUpdate(req.user.id, {
     password: newPassword,
   });
@@ -45,16 +46,6 @@ const updatePassword = async (req, res, next) => {
 
 const patchprofile = async (req, res, next) => {
   let { name, sex, photo } = req.body;
-  if (sex === "男") {
-    sex = "male";
-  } else {
-    sex = "female";
-  }
-  console.log("name", name);
-  console.log("sex", sex);
-  console.log("photo", photo);
-
-  console.log("戳第二次");
   const updateuserinfo = await User.findByIdAndUpdate(req.user.id, { name, sex, photo }, { new: true, runValidators: true });
   console.log("updateuserinfo", updateuserinfo);
   if (!updateuserinfo) {
@@ -68,7 +59,7 @@ const getLikeList = async (req, res, next) => {
     likes: { $in: [req.user.id] },
   }).populate({
     path: "user",
-    select: "name_id",
+    select: "name photo",
   });
   res.status(200).json({
     status: "sucess",
@@ -86,7 +77,7 @@ const follow = async (req, res, next) => {
       return next(appError(401, "沒有此追蹤ID", next));
     }
 
-    await User.updateOne(
+    const data = await User.findOneAndUpdate(
       {
         _id: req.user.id,
         "following.user": { $ne: req.params.user_id },
@@ -106,7 +97,7 @@ const follow = async (req, res, next) => {
     );
     res.status(200).json({
       status: true,
-      message: "您已成功追蹤！",
+      message: data.following,
     });
   }
 };
@@ -115,14 +106,20 @@ const unfollow = async (req, res, next) => {
   if (req.params.id === req.user.id) {
     return next(appError(401, "您無法取消追蹤自己", next));
   }
-  await User.updateOne(
+  const currentUser = await User.findOneAndUpdate(
     {
       _id: req.user.id,
     },
     {
       $pull: { following: { user: req.params.id } },
+    },
+    {
+      new: true,
     }
-  );
+  ).populate({
+    path: "following.user",
+    select: "name photo",
+  });
   await User.updateOne(
     {
       _id: req.params.id,
@@ -131,16 +128,17 @@ const unfollow = async (req, res, next) => {
       $pull: { followers: { user: req.user.id } },
     }
   );
+  const followingList = currentUser.following;
   res.status(200).json({
     status: true,
-    message: "您已成功取消追蹤！",
+    followingList,
   });
 };
 
-const following = async (req, res, next) => {
+const getFollowingList = async (req, res, next) => {
   const currentUser = await User.findOne({ _id: req.user.id }).populate({
     path: "following.user",
-    select: "name",
+    select: "name photo",
   });
   const followingList = currentUser.following;
   res.status(200).json({
@@ -192,7 +190,7 @@ module.exports = {
   getLikeList,
   follow,
   unfollow,
-  following,
+  getFollowingList,
   userimage,
   tokencheck,
   googleapis,

@@ -28,7 +28,7 @@ const anotherLimiter = rateLimit({
   max: 100, //請求100次
   message: "Too many requests, please try again later!",
 });
-app.use(anotherLimiter);
+
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json()); //解析req.body

@@ -11,7 +11,6 @@ const isAuth = (fetchUser = true) => {
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
       token = req.headers.authorization.split(" ")[1];
     }
-
     if (!token) {
       return next(appError(401, "你尚未登入！", next));
     }
@@ -30,19 +29,15 @@ const isAuth = (fetchUser = true) => {
     //   return next(appError(401, "Token 無效"));
     // }
     if (fetchUser) {
-      console.log("fetchUser", fetchUser);
-      console.log("戳第一次");
       const currentUser = await User.findById(decoded.id).select("+email +createdAt");
       if (!currentUser) {
         return next(appError(401, "用戶不存在"));
       }
       //currentUser =>整包會員資料
-      console.log("currentUser", currentUser);
+
       req.user = currentUser;
     } else {
       req.user = decoded;
-      console.log("fetchUser", fetchUser);
-      console.log("req.user", req.user);
     }
     next();
   });

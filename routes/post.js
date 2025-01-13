@@ -39,7 +39,7 @@ router
   )
   .get(
     "/:id",
-    [isAuth, handleErrorAsync(postController.getonePost)]
+    [isAuth(false), handleErrorAsync(postController.getonePost)]
     /**
      * #swagger.tags=['Posts-貼文']
      * #swagger.summary = '取得單一貼文'
@@ -63,8 +63,8 @@ router
      * */
   )
   .get(
-    "/user/:id",
-    [isAuth, handleErrorAsync(postController.getuserpost)]
+    "/:id/user",
+    [isAuth(false), handleErrorAsync(postController.getuserpost)]
     /** #swagger.tags=['Posts-貼文']
      * #swagger.summary = '取得個人所有貼文列表'
      * #swagger.description='取得個人所有貼文列表'*/
@@ -78,14 +78,21 @@ router
   )
   .post(
     "/:id/likes",
-    [isAuth, handleErrorAsync(postController.likepost)]
+    [isAuth(false), handleErrorAsync(postController.likepost)]
     /** #swagger.tags=['Posts-貼文']
      * #swagger.summary = '新增一則貼文的讚'
      * #swagger.description='新增一則貼文的讚'*/
   )
   .delete(
     "/:id/unlikes",
-    [isAuth, handleErrorAsync(postController.deletelikepost)]
+    [isAuth(false), handleErrorAsync(postController.deletelikepost)]
+    /** #swagger.tags=['Posts-貼文']
+     * #swagger.summary = '取消一則貼文的讚'
+     * #swagger.description='取消一則貼文的讚'*/
+  )
+  .delete(
+    "/:id/post",
+    [isAuth(true), handleErrorAsync(postController.deletePostWithComments)]
     /** #swagger.tags=['Posts-貼文']
      * #swagger.summary = '取消一則貼文的讚'
      * #swagger.description='取消一則貼文的讚'*/
