@@ -19,7 +19,8 @@ const getPosts = async (req, res, next) => {
     })
     .populate({
       path: "comments",
-      select: "comment user",
+      select: "comment user createdAt",
+      options: { sort: { createdAt: -1 } }, // 確保comments是由新到舊排序
     })
     .populate({
       path: "likes",
@@ -27,7 +28,7 @@ const getPosts = async (req, res, next) => {
     })
     .sort(timeSort)
     .limit(size);
-  console.log("post取得貼文", post);
+
   if (post.length !== 0) {
     return handleSuccess(res, post, `目前共有${post.length}則貼文`);
   } else return handleSuccess(res, "尚未找到任何貼文", []);
@@ -65,16 +66,16 @@ const likepost = async (req, res, next) => {
 
 const deletePostWithComments = async (req, res, next) => {
   const _id = req.params.id;
-  console.log("delepostid", _id);
+
   try {
     const post = await Post.findById({ _id: _id });
-    console.log("delepost", post);
+
     if (!post) {
       console.log("找不到此貼文");
       return next(appError(400, "沒有此貼文"));
     }
     const deletedata = await Post.findByIdAndDelete(_id);
-    console.log("deletedata", deletedata);
+
     handleSuccess(res, "刪除文章成功", post);
   } catch (error) {
     console.log("error:", error);
@@ -93,7 +94,6 @@ const deletelikepost = async (req, res, next) => {
     postId: _id,
     userId: req.user.id,
   };
-  console.log("deletelikepost", res_data);
   handleSuccess(res, "取消貼文按讚成功", data);
 
   // res.status(201).json({
@@ -116,14 +116,15 @@ const getuserpost = async (req, res, next) => {
     })
     .populate({
       path: "comments",
-      select: "comment user",
+      select: "comment user createdAt",
+      options: { sort: { createdAt: -1 } },
     })
     .populate({
       path: "likes",
       select: "name",
     })
     .sort(timeSort);
-  console.log("postConrol", posts);
+
   handleSuccess(res, posts, "取得使用者貼文");
 
   // res.status(200).json({
@@ -172,13 +173,13 @@ const getonePost = async (req, res, next) => {
     })
     .populate({
       path: "comments",
-      select: "comment",
+      select: "comment createdAt",
+      options: { sort: { createdAt: -1 } },
     })
     .populate({
       path: "likes",
       select: "name",
     });
-  console.log("取得特定貼文的資料", post);
   if (post) {
     return res.status(200).json({
       status: true,
