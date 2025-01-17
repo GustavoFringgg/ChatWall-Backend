@@ -106,9 +106,8 @@ const deletelikepost = async (req, res, next) => {
 const getuserpost = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
-
   const user = req.params.id;
-
+  console.log("getuserpost keyword", keyword);
   const posts = await Post.find({ user, ...keyword })
     .populate({
       path: "user",
@@ -124,7 +123,7 @@ const getuserpost = async (req, res, next) => {
       select: "name",
     })
     .sort(timeSort);
-
+  console.log("post", posts);
   handleSuccess(res, posts, "取得使用者貼文");
 
   // res.status(200).json({

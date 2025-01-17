@@ -3,7 +3,9 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      trim: true, //去除前後空格
+      minlength: 2,
+      maxlength: 7,
+      trim: true,
       required: [true, "請輸入您的名字"],
     },
     email: {
@@ -28,7 +30,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      minlength: 8, //最多為八碼
+      minlength: 8,
       select: false,
     },
     createdAt: {
