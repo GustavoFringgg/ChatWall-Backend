@@ -15,7 +15,7 @@ const app = express();
 const swaggerUI = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json");
 const rateLimit = require("express-rate-limit");
-
+const messagesRouter = require("./routes/message");
 const postsRouter = require("./routes/post");
 const usersRouter = require("./routes/user");
 const uploadRouter = require("./routes/upload");
@@ -39,6 +39,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
+app.use("/api/messages", messagesRouter);
+
 app.use("/upload", uploadRouter, anotherLimiter);
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 

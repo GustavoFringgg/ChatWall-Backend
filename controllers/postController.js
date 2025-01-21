@@ -108,7 +108,7 @@ const getuserpost = async (req, res, next) => {
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
   const user = req.params.id;
   console.log("getuserpost keyword", keyword);
-  const posts = await Post.find({ user, ...keyword })
+  const post = await Post.find({ user, ...keyword })
     .populate({
       path: "user",
       select: "name photo email sex image",
@@ -123,8 +123,9 @@ const getuserpost = async (req, res, next) => {
       select: "name",
     })
     .sort(timeSort);
-  console.log("post", posts);
-  handleSuccess(res, posts, "取得使用者貼文");
+  if (post.length !== 0) {
+    return handleSuccess(res, post, `目前共有${post.length}則貼文`);
+  } else return handleSuccess(res, "尚未找到任何貼文", []);
 
   // res.status(200).json({
   //   status: true,
