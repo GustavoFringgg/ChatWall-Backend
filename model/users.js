@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       minlength: 2,
-      maxlength: 7,
+      maxlength: 10,
       trim: true,
       required: [true, "請輸入您的名字"],
     },

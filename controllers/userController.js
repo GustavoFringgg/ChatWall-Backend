@@ -3,7 +3,7 @@ const User = require("../model/users"); //模組化User 使用大寫
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const handleSuccess = require("../service/handleSuccess");
-
+const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const appError = require("../service/appError");
 const { generateSendJWT } = require("../service/auth");
@@ -178,9 +178,13 @@ const tokencheck = async (req, res, next) => {
 
 const googleapis = async (req, res, next) => {
   // const user = await User.findById(req.user.id).select("+email");
-  console.log("googleapit:req.user", req.user);
-  // console.log("googleapit:user", user);
-  generateSendJWT(req.user, res);
+  const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_DAY,
+  });
+
+  const frontendCallbackUrl = `http://localhost:5173/#/callback?token=${token}`;
+  res.redirect(frontendCallbackUrl);
+  // generateSendJWT(req.user, res);
 };
 
 module.exports = {

@@ -13,7 +13,7 @@ const getPosts = async (req, res, next) => {
   if (req.query.size) {
     size = parseInt(req.query.size) > 50 ? 50 : parseInt(req.query.size);
   }
-  const post = await Post.find(keyword)
+  let post = await Post.find(keyword)
     .populate({
       path: "user", //因為Post.find，所以指向Post model裡頭的user欄位
     })
@@ -28,7 +28,14 @@ const getPosts = async (req, res, next) => {
     })
     .sort(timeSort)
     .limit(size);
-
+  if (req.query.timeSort === "hot") {
+    post = post
+      .map((post) => {
+        const hotscores = (post.likes?.length || 0) * 2 + (post.comments?.length || 0);
+        return { ...post.toObject(), hotscores };
+      })
+      .sort((a, b) => b.hotscores - a.hotscores);
+  }
   if (post.length !== 0) {
     return handleSuccess(res, post, `目前共有${post.length}則貼文`);
   } else return handleSuccess(res, "尚未找到任何貼文", []);
@@ -57,11 +64,6 @@ const likepost = async (req, res, next) => {
     userId: req.user.id,
   };
   handleSuccess(res, "貼文按讚成功", data);
-  // res.status(201).json({
-  //   status: true,
-  //   postId: _id,
-  //   userId: req.user.id,
-  // });
 };
 
 const deletePostWithComments = async (req, res, next) => {
@@ -95,12 +97,6 @@ const deletelikepost = async (req, res, next) => {
     userId: req.user.id,
   };
   handleSuccess(res, "取消貼文按讚成功", data);
-
-  // res.status(201).json({
-  //   status: true,
-  //   postId: _id,
-  //   userId: req.user.id,
-  // });
 };
 
 const getuserpost = async (req, res, next) => {
@@ -108,7 +104,7 @@ const getuserpost = async (req, res, next) => {
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
   const user = req.params.id;
   console.log("getuserpost keyword", keyword);
-  const post = await Post.find({ user, ...keyword })
+  let post = await Post.find({ user, ...keyword })
     .populate({
       path: "user",
       select: "name photo email sex image",
@@ -123,15 +119,17 @@ const getuserpost = async (req, res, next) => {
       select: "name",
     })
     .sort(timeSort);
+  if (req.query.timeSort === "hot") {
+    post = post
+      .map((post) => {
+        const hotscores = (post.likes?.length || 0) * 2 + (post.comments?.length || 0);
+        return { ...post.toObject(), hotscores };
+      })
+      .sort((a, b) => b.hotscores - a.hotscores);
+  }
   if (post.length !== 0) {
     return handleSuccess(res, post, `目前共有${post.length}則貼文`);
   } else return handleSuccess(res, "尚未找到任何貼文", []);
-
-  // res.status(200).json({
-  //   status: true,
-  //   results: posts.length,
-  //   posts,
-  // });
 };
 
 const postcomment = async (req, res, next) => {
@@ -156,12 +154,6 @@ const postcomment = async (req, res, next) => {
   };
 
   handleSuccess(res, "新增留言成功", data);
-  // res.status(201).json({
-  //   status: true,
-  //   data: {
-  //     comments: newComment,
-  //   },
-  // });
 };
 
 const getonePost = async (req, res, next) => {
