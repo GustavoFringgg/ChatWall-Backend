@@ -17,6 +17,5 @@ router
   .delete("/userimage/:id", [isAuth(false), handleErrorAsync(userController.userimage)])
   .get("/checkout", [isAuth(true), handleErrorAsync(userController.tokencheck)])
   .get("/google", passport.authenticate("google", { scope: ["email", "profile"] }))
-  .get("/google/callback", passport.authenticate("google", { session: false }), handleErrorAsync(userController.googleapis))
-  .post("/googleClient/callback", passport.authenticate("google", { session: false }), handleErrorAsync(userController.googleapis));
+  .get("/google/callback", passport.authenticate("google", { session: false }), handleErrorAsync(userController.googleapis));
 module.exports = router;

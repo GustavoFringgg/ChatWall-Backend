@@ -44,8 +44,9 @@ const getPosts = async (req, res, next) => {
 //****post****
 const postPosts = async (req, res, next) => {
   const { content, image } = req.body;
+  console.log("userpost", req.user);
   if (content != undefined && content.trim()) {
-    const new_post = await Post.create({ user: req.user.id, content, image });
+    const new_post = await Post.create({ user: req.user.payload?.googleId ? req.user.payload.id : req.user.id, content, image });
     return handleSuccess(res, "新增貼文成功", new_post);
   } else {
     return next(appError(400, "你沒有填寫 content 資料"));
@@ -58,10 +59,10 @@ const likepost = async (req, res, next) => {
   if (!(await Post.findById({ _id: _id }))) {
     return next(appError(400, "沒有此貼文"));
   }
-  await Post.findOneAndUpdate({ _id }, { $addToSet: { likes: req.user.id } });
+  await Post.findOneAndUpdate({ _id }, { $addToSet: { likes: req.user.payload?.googleId ? req.user.payload.id : req.user.id } });
   const data = {
     postId: _id,
-    userId: req.user.id,
+    userId: req.user.payload?.googleId ? req.user.payload.id : req.user.id,
   };
   handleSuccess(res, "貼文按讚成功", data);
 };
@@ -88,13 +89,13 @@ const deletelikepost = async (req, res, next) => {
   if (!(await Post.findById({ _id: _id }))) {
     return next(appError(400, "沒有此貼文"));
   }
-  const res_data = await Post.findOneAndUpdate({ _id }, { $pull: { likes: req.user.id } }, { new: true }).populate({
+  const res_data = await Post.findOneAndUpdate({ _id }, { $pull: { likes: req.user.payload?.googleId ? req.user.payload.id : req.user.id } }, { new: true }).populate({
     path: "user",
     select: "name photo",
   });
   const data = {
     postId: _id,
-    userId: req.user.id,
+    userId: req.user.payload?.googleId ? req.user.payload.id : req.user.id,
   };
   handleSuccess(res, "取消貼文按讚成功", data);
 };
@@ -133,7 +134,7 @@ const getuserpost = async (req, res, next) => {
 };
 
 const postcomment = async (req, res, next) => {
-  const user = req.user.id;
+  const user = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   const post = req.params.id;
   const { comment } = req.body;
   if (!comment) {

@@ -12,11 +12,9 @@ const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
 const profile = async (req, res, next) => {
   const id = req.params.id;
-  console.log(id);
   const userInfo = await User.findOne({ _id: id });
   // const { name, sex, email, createdAt } = req.user;
   // const localTime = createdAt.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
-  console.log("userInfo", userInfo);
   handleSuccess(res, "取得個人資料", userInfo);
 };
 
@@ -47,7 +45,6 @@ const updatePassword = async (req, res, next) => {
 const patchprofile = async (req, res, next) => {
   let { name, sex, photo } = req.body;
   const updateuserinfo = await User.findByIdAndUpdate(req.user.id, { name, sex, photo }, { new: true, runValidators: true });
-  console.log("updateuserinfo", updateuserinfo);
   if (!updateuserinfo) {
     return next(appError(404, "用戶不存在"));
   }
@@ -56,7 +53,7 @@ const patchprofile = async (req, res, next) => {
 
 const getLikeList = async (req, res, next) => {
   const likeList = await Post.find({
-    likes: { $in: [req.user.id] },
+    likes: { $in: [req.user.payload?.googleId ? req.user.payload.id : req.user.id] },
   }).populate({
     path: "user",
     select: "name photo",
@@ -69,7 +66,7 @@ const getLikeList = async (req, res, next) => {
 
 const follow = async (req, res, next) => {
   {
-    if (req.params.user_id === req.user.id) {
+    if (req.params.user_id === req.user.payload?.googleId ? req.user.payload.id : req.user.id) {
       return next(appError(401, "你無法追蹤自己", next));
     }
 
@@ -79,7 +76,7 @@ const follow = async (req, res, next) => {
 
     const data = await User.findOneAndUpdate(
       {
-        _id: req.user.id,
+        _id: req.user.payload?.googleId ? req.user.payload.id : req.user.id,
         "following.user": { $ne: req.params.user_id },
       },
       {
@@ -89,10 +86,10 @@ const follow = async (req, res, next) => {
     await User.updateOne(
       {
         _id: req.params.user_id,
-        "followers.user": { $ne: req.user.id },
+        "followers.user": { $ne: req.user.payload?.googleId ? req.user.payload.id : req.user.id },
       },
       {
-        $addToSet: { followers: { user: req.user.id } },
+        $addToSet: { followers: { user: req.user.payload?.googleId ? req.user.payload.id : req.user.id } },
       }
     );
     res.status(200).json({
@@ -103,12 +100,12 @@ const follow = async (req, res, next) => {
 };
 
 const unfollow = async (req, res, next) => {
-  if (req.params.id === req.user.id) {
+  if (req.params.id === req.user.payload?.googleId ? req.user.payload.id : req.user.id) {
     return next(appError(401, "您無法取消追蹤自己", next));
   }
   const currentUser = await User.findOneAndUpdate(
     {
-      _id: req.user.id,
+      _id: req.user.payload?.googleId ? req.user.payload.id : req.user.id,
     },
     {
       $pull: { following: { user: req.params.id } },
@@ -125,7 +122,7 @@ const unfollow = async (req, res, next) => {
       _id: req.params.id,
     },
     {
-      $pull: { followers: { user: req.user.id } },
+      $pull: { followers: { user: req.user.payload?.googleId ? req.user.payload.id : req.user.id } },
     }
   );
   const followingList = currentUser.following;
@@ -136,7 +133,7 @@ const unfollow = async (req, res, next) => {
 };
 
 const getFollowingList = async (req, res, next) => {
-  const currentUser = await User.findOne({ _id: req.user.id }).populate({
+  const currentUser = await User.findOne({ _id: req.user.payload?.googleId ? req.user.payload.id : req.user.id }).populate({
     path: "following.user",
     select: "name photo",
   });
@@ -177,14 +174,15 @@ const tokencheck = async (req, res, next) => {
 };
 
 const googleapis = async (req, res, next) => {
-  // const user = await User.findById(req.user.id).select("+email");
-  const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+  const payload = {
+    id: req.user._id,
+    googleId: req.user.googleId || null,
+  };
+  const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_DAY,
   });
-
   const frontendCallbackUrl = `http://localhost:5173/#/callback?token=${token}`;
   res.redirect(frontendCallbackUrl);
-  // generateSendJWT(req.user, res);
 };
 
 module.exports = {

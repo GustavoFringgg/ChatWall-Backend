@@ -12,7 +12,7 @@ const isAuth = (fetchUser = true) => {
       token = req.headers.authorization.split(" ")[1];
     }
     if (!token) {
-      return next(appError(401, "你尚未登入！", next));
+      return next(appError(401, "你還沒有登入~~", next));
     }
     // 驗證 token 正確性
     const decoded = await new Promise((resolve, reject) => {
@@ -24,17 +24,12 @@ const isAuth = (fetchUser = true) => {
         }
       });
     });
-    //decoded : payload{ mongodb_id,iat(製造日期),exp(過期日期) }
-    // if (!decoded || !decoded.id) {
-    //   return next(appError(401, "Token 無效"));
-    // }
     if (fetchUser) {
-      const currentUser = await User.findById(decoded.id).select("+email +createdAt");
+      const currentUser = await User.findById(decoded.payload?.googleId ? decoded.payload.id : decoded.id).select("+email +createdAt");
       if (!currentUser) {
         return next(appError(401, "用戶不存在"));
       }
       //currentUser =>整包會員資料
-
       req.user = currentUser;
     } else {
       req.user = decoded;
@@ -42,7 +37,7 @@ const isAuth = (fetchUser = true) => {
     next();
   });
 };
-// 產生 JWT token
+
 const generateSendJWT = (user, res) => {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_DAY,
@@ -65,16 +60,6 @@ const generateSendJWT = (user, res) => {
   };
   user.password = undefined;
   handleSuccess(res, "Token核發", data);
-  // res.status(statusCode).json({
-  //   status: "success",
-  //   user: {
-  //     token,
-  //     name: user.name,
-  //   },
-  //   Issued_At: issuedAt,
-  //   Expires_At: expiresAt,
-  //   Expires_Day: days,
-  // });
 };
 
 module.exports = {
