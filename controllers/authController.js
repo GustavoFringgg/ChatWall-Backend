@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const mongoose = require("mongoose");
 const appError = require("../service/appError");
+const jwt = require("jsonwebtoken");
 const { generateSendJWT } = require("../service/auth");
 const sign_up = async (req, res, next) => {
   let { email, password, confirmPassword, name } = req.body;
@@ -68,4 +69,28 @@ const sign_in = async (req, res, next) => {
   generateSendJWT(user, res);
 };
 
-module.exports = { sign_in, sign_up };
+const validate = async (req, res, next) => {
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    return next(appError(401, "你還沒有登入~~", next));
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // 驗證 JWT
+    return res.json({ user: decoded, message: "Token 驗證成功" });
+    // const decoded = await new Promise((resolve, reject) => {
+    //   jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+    //     if (err) {
+    //       return next(appError(400, "token效期過期請重新登入"));
+    //     } else {
+    //       resolve(payload);
+    //     }
+    //   });
+    // });
+  } catch (error) {
+    return res.status(401).json({ message: "無效的 Token" });
+  }
+};
+module.exports = { sign_in, sign_up, validate };

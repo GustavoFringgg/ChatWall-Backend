@@ -127,4 +127,5 @@ router.post(
    */
 );
 
+router.get("/validate-token", [handleErrorAsync(authController.validate)]);
 module.exports = router;

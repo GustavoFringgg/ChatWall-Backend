@@ -65,8 +65,9 @@ const getLikeList = async (req, res, next) => {
 };
 
 const follow = async (req, res, next) => {
+  const targetUserId = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   {
-    if (req.params.user_id === req.user.payload?.googleId ? req.user.payload.id : req.user.id) {
+    if (req.params.user_id === targetUserId) {
       return next(appError(401, "你無法追蹤自己", next));
     }
 
@@ -76,7 +77,7 @@ const follow = async (req, res, next) => {
 
     const data = await User.findOneAndUpdate(
       {
-        _id: req.user.payload?.googleId ? req.user.payload.id : req.user.id,
+        _id: targetUserId,
         "following.user": { $ne: req.params.user_id },
       },
       {
@@ -86,10 +87,10 @@ const follow = async (req, res, next) => {
     await User.updateOne(
       {
         _id: req.params.user_id,
-        "followers.user": { $ne: req.user.payload?.googleId ? req.user.payload.id : req.user.id },
+        "followers.user": { $ne: targetUserId },
       },
       {
-        $addToSet: { followers: { user: req.user.payload?.googleId ? req.user.payload.id : req.user.id } },
+        $addToSet: { followers: { user: targetUserId } },
       }
     );
     res.status(200).json({
@@ -100,12 +101,14 @@ const follow = async (req, res, next) => {
 };
 
 const unfollow = async (req, res, next) => {
-  if (req.params.id === req.user.payload?.googleId ? req.user.payload.id : req.user.id) {
+  const targetUserId = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
+
+  if (req.params.id === targetUserId) {
     return next(appError(401, "您無法取消追蹤自己", next));
   }
   const currentUser = await User.findOneAndUpdate(
     {
-      _id: req.user.payload?.googleId ? req.user.payload.id : req.user.id,
+      _id: targetUserId,
     },
     {
       $pull: { following: { user: req.params.id } },
@@ -122,7 +125,7 @@ const unfollow = async (req, res, next) => {
       _id: req.params.id,
     },
     {
-      $pull: { followers: { user: req.user.payload?.googleId ? req.user.payload.id : req.user.id } },
+      $pull: { followers: { user: targetUserId } },
     }
   );
   const followingList = currentUser.following;
