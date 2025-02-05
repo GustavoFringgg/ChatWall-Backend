@@ -184,7 +184,8 @@ const googleapis = async (req, res, next) => {
   const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_DAY,
   });
-  const frontendCallbackUrl = `http://localhost:5173/#/callback?token=${token}`;
+  // const frontendCallbackUrl = `http://localhost:5173/#/callback?token=${token}`;
+  const frontendCallbackUrl = `https://chat-wall-frontend-v2-28cc.vercel.app//#/callback?token=${token}`;
   res.redirect(frontendCallbackUrl);
 };
 
