@@ -8,8 +8,8 @@ passport.use(
     {
       clientID: process.env.Oauthid,
       clientSecret: process.env.Oauthpassword,
-      // callbackURL: "http://localhost:3000/users/google/callback",
-      callbackURL: "https://chatwall-backend.onrender.com/users/google/callback",
+      callbackURL: "http://localhost:3000/users/google/callback",
+      //callbackURL: "https://chatwall-backend.onrender.com/users/google/callback",
     },
     async function (accessToken, refreshToken, profile, next) {
       try {

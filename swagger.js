@@ -8,7 +8,8 @@ const doc = {
     title: "Meta API",
     description: "Meta swagger api",
   },
-  host: "https://chatwall-backend.onrender.com",
+  host: "localhost:3000",
+  // host: "https://chatwall-backend.onrender.com",
   schemes: ["http", "https"],
   securityDefinitions: {
     apiKeyAuth: {

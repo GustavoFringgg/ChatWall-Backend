@@ -2,7 +2,7 @@ const socketIO = require("socket.io");
 const Message = require("../model/message");
 const mongoose = require("mongoose");
 const messageBuffer = [];
-const SAVE_INTERVAL = 20000; // 每 20 秒儲存一次
+const SAVE_INTERVAL = 20000;
 
 function connectSocketIo(server) {
   const io = new socketIO.Server(server); //初始化

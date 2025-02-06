@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema(
     following: [
       {
         user: { type: mongoose.Schema.ObjectId, ref: "Usermodel" },
-        createAt: {
+        createdAt: {
           type: Date,
           default: Date.now,
         },
