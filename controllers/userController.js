@@ -13,8 +13,9 @@ const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 const profile = async (req, res, next) => {
   const id = req.params.id;
   const userInfo = await User.findOne({ _id: id });
-  // const { name, sex, email, createdAt } = req.user;
-  // const localTime = createdAt.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
+  if (!userInfo) {
+    return next(appError(404, "找不到此會員", next));
+  }
   handleSuccess(res, "取得個人資料", userInfo);
 };
 
@@ -43,8 +44,9 @@ const updatePassword = async (req, res, next) => {
 };
 
 const patchprofile = async (req, res, next) => {
+  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   let { name, sex, photo } = req.body;
-  const updateuserinfo = await User.findByIdAndUpdate(req.user.id, { name, sex, photo }, { new: true, runValidators: true });
+  const updateuserinfo = await User.findByIdAndUpdate(user_id, { name, sex, photo }, { new: true, runValidators: true });
   if (!updateuserinfo) {
     return next(appError(404, "用戶不存在"));
   }
@@ -52,14 +54,15 @@ const patchprofile = async (req, res, next) => {
 };
 
 const getLikeList = async (req, res, next) => {
+  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   const likeList = await Post.find({
-    likes: { $in: [req.user.payload?.googleId ? req.user.payload.id : req.user.id] },
+    likes: { $in: [user_id] },
   }).populate({
     path: "user",
     select: "name photo",
   });
   res.status(200).json({
-    status: "sucess",
+    status: true,
     likeList,
   });
 };
@@ -93,10 +96,11 @@ const follow = async (req, res, next) => {
         $addToSet: { followers: { user: targetUserId } },
       }
     );
-    res.status(200).json({
-      status: true,
-      message: data.following,
-    });
+    return handleSuccess(res, "追蹤成功", data);
+    // res.status(200).json({
+    //   status: true,
+    //   message: data.following,
+    // });
   }
 };
 
@@ -129,14 +133,16 @@ const unfollow = async (req, res, next) => {
     }
   );
   const followingList = currentUser.following;
-  res.status(200).json({
-    status: true,
-    followingList,
-  });
+  return handleSuccess(res, "取消追蹤成功", followingList);
+  // res.status(200).json({
+  //   status: true,
+  //   followingList,
+  // });
 };
 
 const getFollowingList = async (req, res, next) => {
-  const currentUser = await User.findOne({ _id: req.user.payload?.googleId ? req.user.payload.id : req.user.id }).populate({
+  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
+  const currentUser = await User.findOne({ _id: user_id }).populate({
     path: "following.user",
     select: "name photo",
   });

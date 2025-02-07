@@ -4,7 +4,7 @@ const swaggerOptions = {
 const swaggerAutogen = require("swagger-autogen")(swaggerOptions); //引入swagger
 let baseURL;
 if (process.env.NODE_ENV === "production") {
-  baseURL = "https://chatwall-backend.onrender.com";
+  baseURL = "chatwall-backend.onrender.com";
 } else {
   baseURL = "localhost:3000";
 }
@@ -17,7 +17,7 @@ const doc = {
     description: "ChatWall swagger api",
   },
   host: baseURL,
-  schemes: ["http", "https"],
+  schemes: process.env.NODE_ENV === "production" ? ["https"] : ["http"],
   securityDefinitions: {
     apiKeyAuth: {
       type: "apiKey",

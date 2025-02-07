@@ -8,8 +8,7 @@
   "host": "localhost:3000",
   "basePath": "/",
   "schemes": [
-    "http",
-    "https"
+    "http"
   ],
   "securityDefinitions": {
     "apiKeyAuth": {
@@ -1500,12 +1499,158 @@
         "tags": [
           "Users-會員"
         ],
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
+        "summary": "重設密碼",
+        "description": "重設密碼",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "輸入原密碼，新密碼，確認密碼",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "oldPassword": {
+                  "type": "string",
+                  "example": "123456789A"
+                },
+                "newPassword": {
+                  "type": "string",
+                  "example": "123456789B"
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "example": "123456789B"
+                }
+              },
+              "required": [
+                "oldPassword",
+                "newPassword",
+                "confirmPassword"
+              ]
+            }
           }
-        }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Token核發"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "example": "token"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "test"
+                        }
+                      }
+                    },
+                    "Issued_At": {
+                      "type": "string",
+                      "example": "2025/2/7 下午4:05:03"
+                    },
+                    "Expires_At": {
+                      "type": "string",
+                      "example": "2025/2/9 下午4:05:03"
+                    },
+                    "Expires_Day": {
+                      "type": "number",
+                      "example": 2
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "密碼不一致"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "密碼輸入錯誤"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 401
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/users/profile/{id}": {
@@ -1513,7 +1658,8 @@
         "tags": [
           "Users-會員"
         ],
-        "description": "",
+        "summary": "取得會員資料",
+        "description": "取得會員資料 user測試ID: 67a58d158898ee94cc357cbc",
         "parameters": [
           {
             "name": "id",
@@ -1523,10 +1669,94 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "取得個人資料"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "user_id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "user_name"
+                    },
+                    "photo": {
+                      "type": "string",
+                      "example": "user_photourl"
+                    },
+                    "sex": {
+                      "type": "string",
+                      "example": "user_sex"
+                    },
+                    "followers": {
+                      "type": "array",
+                      "example": [],
+                      "items": {}
+                    },
+                    "following": {
+                      "type": "array",
+                      "example": [],
+                      "items": {}
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "找不到此會員"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 404
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/users/profile/": {
@@ -1534,12 +1764,18 @@
         "tags": [
           "Users-會員"
         ],
+        "summary": "更新會員資料",
         "description": "",
         "responses": {
           "default": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/users/getLikeList": {
@@ -1547,12 +1783,35 @@
         "tags": [
           "Users-會員"
         ],
+        "summary": "取得個人按讚列表",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "likeList": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/users/{user_id}/follow": {
@@ -1560,7 +1819,8 @@
         "tags": [
           "Users-會員"
         ],
-        "description": "",
+        "summary": "追蹤其他人",
+        "description": "user測試ID: 679349592fd34c3781c33cbb",
         "parameters": [
           {
             "name": "user_id",
@@ -1570,10 +1830,64 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "你無法追蹤自己"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 401
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/users/getFollowingList": {
@@ -1581,12 +1895,35 @@
         "tags": [
           "Users-會員"
         ],
+        "summary": "取得個人追蹤名單",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "followingList": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/users/{id}/unfollow": {
@@ -1594,7 +1931,8 @@
         "tags": [
           "Users-會員"
         ],
-        "description": "",
+        "summary": "取消追蹤其他人 ",
+        "description": "提供取消追蹤user測試ID: 679349592fd34c3781c33cbb",
         "parameters": [
           {
             "name": "id",
@@ -1604,10 +1942,64 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "您無法取消追蹤自己"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 401
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/api/messages/": {
@@ -1669,14 +2061,20 @@
     "/upload/file": {
       "post": {
         "tags": [
-          "Upload"
+          "Upload-上傳照片"
         ],
-        "description": "",
+        "summary": "上傳個人照片/貼文照片 暫不開放API測試",
+        "description": "上傳個人照片/貼文照片 暫不開放API測試",
         "responses": {
           "default": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     }
   }
