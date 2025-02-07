@@ -1,15 +1,20 @@
 const passport = require("passport");
 const User = require("../model/users");
 const dotenv = require("dotenv");
-dotenv.config({ path: "./config.env" }); //引入config
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+dotenv.config({ path: "./config.env" });
+let OAUTH_CALLBACK_URL;
+if (process.env.NODE_ENV === "production") {
+  OAUTH_CALLBACK_URL = "https://chatwall-backend.onrender.com/users/google/callback";
+} else {
+  OAUTH_CALLBACK_URL = "http://localhost:3000/users/google/callback";
+}
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.Oauthid,
       clientSecret: process.env.Oauthpassword,
-      callbackURL: "http://localhost:3000/users/google/callback",
-      //callbackURL: "https://chatwall-backend.onrender.com/users/google/callback",
+      callbackURL: OAUTH_CALLBACK_URL,
     },
     async function (accessToken, refreshToken, profile, next) {
       try {
