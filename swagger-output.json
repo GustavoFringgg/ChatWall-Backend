@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Meta API",
-    "description": "Meta swagger api",
+    "title": "ChatWall 後端API",
+    "description": "ChatWall swagger api",
     "version": "1.0.0"
   },
   "host": "localhost:3000",
@@ -38,7 +38,7 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "testUser"
+                  "example": "test"
                 },
                 "email": {
                   "type": "string",
@@ -369,6 +369,252 @@
         }
       }
     },
+    "/auth/checkout-token": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "驗證Token 不會通過資料庫",
+        "description": "單純驗證Token，並不會經過資料庫",
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Token 驗證成功"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "User_id"
+                    },
+                    "iat": {
+                      "type": "number",
+                      "example": 1738902806
+                    },
+                    "exp": {
+                      "type": "number",
+                      "example": 1739075606
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "token效期過期請重新登入"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "你還沒有登入~~~"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 401
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/checkout-userinfo": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "驗證Token 透過資料庫取得資料",
+        "description": "初次登入時驗證Token，並透過資料庫索取使用者資料，帶回前端",
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Token 驗證成功"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "user_id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "user_name"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "user_email"
+                    },
+                    "photo": {
+                      "type": "string",
+                      "example": "user_photoemail"
+                    },
+                    "sex": {
+                      "type": "string",
+                      "example": "user_sex"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-02-07T04:33:25.973Z"
+                    },
+                    "followers": {
+                      "type": "array",
+                      "example": [],
+                      "items": {}
+                    },
+                    "following": {
+                      "type": "array",
+                      "example": [],
+                      "items": {}
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "token效期過期請重新登入"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "你還沒有登入~~~"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 401
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
     "/posts/": {
       "get": {
         "tags": [
@@ -377,11 +623,6 @@
         "summary": "取得所有貼文",
         "description": "取得所有貼文",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "keyword",
             "in": "query",
@@ -400,7 +641,7 @@
           {
             "name": "timeSort",
             "in": "query",
-            "description": "發文時間排序方式，預設 desc 降冪排序，asc=遠到近，desc=近到遠",
+            "description": "發文時間排序方式，預 設 desc 降冪排序，asc=遠到近，desc=近到遠",
             "required": false,
             "type": "string",
             "enum": [
@@ -422,11 +663,6 @@
         "summary": "新增貼文",
         "description": "新增貼文",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -471,11 +707,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -485,7 +716,7 @@
         }
       }
     },
-    "/posts/user/{id}": {
+    "/posts/{id}/user": {
       "get": {
         "tags": [
           "Posts-貼文"
@@ -497,11 +728,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -525,11 +751,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -551,11 +772,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -579,10 +795,27 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/posts/{id}/post": {
+      "delete": {
+        "tags": [
+          "Posts-貼文"
+        ],
+        "summary": "取消一則貼文的讚",
+        "description": "取消一則貼文的讚",
+        "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -599,10 +832,24 @@
           "Users-會員"
         ],
         "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/profile/{id}": {
+      "get": {
+        "tags": [
+          "Users-會員"
+        ],
+        "description": "",
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -614,36 +861,11 @@
       }
     },
     "/users/profile/": {
-      "get": {
-        "tags": [
-          "Users-會員"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      },
       "patch": {
         "tags": [
           "Users-會員"
         ],
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "default": {
             "description": ""
@@ -657,13 +879,6 @@
           "Users-會員"
         ],
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "default": {
             "description": ""
@@ -683,11 +898,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -697,19 +907,12 @@
         }
       }
     },
-    "/users/following": {
+    "/users/getFollowingList": {
       "get": {
         "tags": [
           "Users-會員"
         ],
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "default": {
             "description": ""
@@ -729,11 +932,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
           }
         ],
         "responses": {
@@ -743,44 +941,60 @@
         }
       }
     },
-    "/users/userimage/{id}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/users/checkout": {
+    "/api/messages/": {
       "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
+        "tags": [
+          "Messages-聊天室"
         ],
+        "summary": "取得聊天室內容",
+        "description": "取得最新20筆聊天室內容",
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "67934f7d2fd34c3781c34184"
+                },
+                "content": {
+                  "type": "string",
+                  "example": "大家可以互相追蹤按讚喔"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "User_id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "User_name"
+                    },
+                    "photo": {
+                      "type": "string",
+                      "example": "User_photoUrl"
+                    }
+                  }
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2025-01-24T08:29:41.341Z"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Created"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/upload/file": {
@@ -789,13 +1003,6 @@
           "Upload"
         ],
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "default": {
             "description": ""

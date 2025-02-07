@@ -69,28 +69,11 @@ const sign_in = async (req, res, next) => {
   generateSendJWT(user, res);
 };
 
-const validate = async (req, res, next) => {
-  let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    token = req.headers.authorization.split(" ")[1];
-  }
-  if (!token) {
-    return next(appError(401, "你還沒有登入~~", next));
-  }
+const tokencheck = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // 驗證 JWT
-    return res.json({ user: decoded, message: "Token 驗證成功" });
-    // const decoded = await new Promise((resolve, reject) => {
-    //   jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-    //     if (err) {
-    //       return next(appError(400, "token效期過期請重新登入"));
-    //     } else {
-    //       resolve(payload);
-    //     }
-    //   });
-    // });
+    res.status(200).json({ message: "Token 驗證成功", user: req.user });
   } catch (error) {
-    return res.status(401).json({ message: "無效的 Token" });
+    next(error);
   }
 };
-module.exports = { sign_in, sign_up, validate };
+module.exports = { sign_in, sign_up, tokencheck };

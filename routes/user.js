@@ -14,8 +14,18 @@ router
   .post("/:user_id/follow", [isAuth(false), handleErrorAsync(userController.follow)] /*** #swagger.tags=['Users-會員']*/) //user id 追蹤朋友
   .get("/getFollowingList", [isAuth(false), handleErrorAsync(userController.getFollowingList)] /*** #swagger.tags=['Users-會員']*/) //取得個人追蹤名單
   .delete("/:id/unfollow", [isAuth(false), handleErrorAsync(userController.unfollow)] /*** #swagger.tags=['Users-會員']*/) //取消追蹤朋友
-  .delete("/userimage/:id", [isAuth(false), handleErrorAsync(userController.userimage)])
-  .get("/checkout", [isAuth(true), handleErrorAsync(userController.tokencheck)])
-  .get("/google", passport.authenticate("google", { scope: ["email", "profile"] }))
-  .get("/google/callback", passport.authenticate("google", { session: false }), handleErrorAsync(userController.googleapis));
+
+  .get(
+    "/google",
+    passport.authenticate("google", { scope: ["email", "profile"] })
+    // #swagger.ignore = true
+  )
+  .get(
+    "/google/callback",
+    passport.authenticate("google", { session: false }),
+    handleErrorAsync(userController.googleapis)
+    // #swagger.ignore = true
+  );
+
+// .delete("/userimage/:id", [isAuth(false), handleErrorAsync(userController.userimage)])
 module.exports = router;

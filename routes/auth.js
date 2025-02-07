@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const handleErrorAsync = require("../service/handleErrorAsync");
 const authController = require("../controllers/authController");
+const { isAuth } = require("../service/auth");
+
 router.post(
   "/sign_Up",
   [handleErrorAsync(authController.sign_up)]
@@ -14,7 +16,7 @@ router.post(
     description: '註冊資訊',
     required: true,
     schema: {
-                $name: 'testUser',
+                $name: 'test',
                 $email: 'testUser@mail.com',
                 $password: '123456789A',
                 $confirmPassword:'123456789A'
@@ -53,7 +55,7 @@ router.post(
      "stack": "error.message"
     }
     }
-        #swagger.responses[402] = {
+    #swagger.responses[402] = {
     schema: { 
     "message": "欄位未填寫正確！",
     "error": {
@@ -127,5 +129,90 @@ router.post(
    */
 );
 
-router.get("/validate-token", [handleErrorAsync(authController.validate)]);
+router.get(
+  "/checkout-token",
+  [isAuth(false), handleErrorAsync(authController.tokencheck)]
+  /*
+  #swagger.tags = ['Auth']
+  #swagger.summary = '驗證Token 不會通過資料庫'
+  #swagger.description = '單純驗證Token，並不會經過資料庫' 
+  #swagger.security = [{"apiKeyAuth": []}]
+  #swagger.responses[201] = {
+  schema: { 
+  "message": "Token 驗證成功",
+  "user": {
+    "id": "User_id",
+    "iat": 1738902806,
+    "exp": 1739075606
+  }
+  }
+  }
+  #swagger.responses[401] = {
+  schema: { 
+  "message": "你還沒有登入~~~",
+  "error": {
+  "statusCode": 401,
+  "isOperational": true
+  },
+  "stack": "error.message"
+  }
+  }
+  #swagger.responses[400] = {
+  schema: { 
+  "message": "token效期過期請重新登入",
+  "error": {
+  "statusCode": 400,
+  "isOperational": true
+  },
+  "stack": "error.message"
+  }
+  }
+*/
+);
+router.get(
+  "/checkout-userinfo",
+  [isAuth(true), handleErrorAsync(authController.tokencheck)]
+  /*
+  #swagger.tags = ['Auth']
+  #swagger.summary = '驗證Token 透過資料庫取得資料'
+  #swagger.description = '初次登入時驗證Token，並透過資料庫索取使用者資料，帶回前端' 
+  #swagger.security = [{"apiKeyAuth": []}]
+  #swagger.responses[201] = {
+  schema: { 
+  "message": "Token 驗證成功",
+  "user": {
+    "_id": "user_id",
+    "name": "user_name",
+    "email": "user_email",
+    "photo": "user_photoemail",
+    "sex": "user_sex",
+    "createdAt": "2025-02-07T04:33:25.973Z",
+    "followers": [],
+    "following": []
+  }
+  }
+  }
+  #swagger.responses[401] = {
+  schema: { 
+  "message": "你還沒有登入~~~",
+  "error": {
+  "statusCode": 401,
+  "isOperational": true
+  },
+  "stack": "error.message"
+  }
+  }
+  #swagger.responses[400] = {
+  schema: { 
+  "message": "token效期過期請重新登入",
+  "error": {
+  "statusCode": 400,
+  "isOperational": true
+  },
+  "stack": "error.message"
+  }
+  }
+*/
+);
+
 module.exports = router;
