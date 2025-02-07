@@ -641,20 +641,108 @@
           {
             "name": "timeSort",
             "in": "query",
-            "description": "發文時間排序方式，預 設 desc 降冪排序，asc=遠到近，desc=近到遠",
+            "description": "發文時間排序方式，預設 desc 降冪排序，asc=最舊貼文，desc=最新貼文 hot=熱門貼文",
             "required": false,
             "type": "string",
             "enum": [
               "asc",
-              "desc"
+              "desc",
+              "hot"
             ]
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "content_id"
+                      },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "example": "user_id"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "user_name"
+                          },
+                          "photo": {
+                            "type": "string",
+                            "example": "user_photourl"
+                          },
+                          "sex": {
+                            "type": "string",
+                            "example": "user_sex"
+                          },
+                          "followers": {
+                            "type": "array",
+                            "example": [],
+                            "items": {}
+                          },
+                          "following": {
+                            "type": "array",
+                            "example": [],
+                            "items": {}
+                          }
+                        }
+                      },
+                      "likes": {
+                        "type": "array",
+                        "example": [],
+                        "items": {}
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "user_content"
+                      },
+                      "image": {},
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2025-02-07T05:13:58.442Z"
+                      },
+                      "comments": {
+                        "type": "array",
+                        "example": [],
+                        "items": {}
+                      },
+                      "id": {
+                        "type": "string",
+                        "example": "content_id"
+                      }
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "目前共有1則貼文"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Created"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -683,8 +771,90 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "新增貼文成功"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "string",
+                      "example": "user_id"
+                    },
+                    "likes": {
+                      "type": "array",
+                      "example": [],
+                      "items": {}
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "今天想吃牛肉麵"
+                    },
+                    "image": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "_id": {
+                      "type": "string",
+                      "example": "content_id"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-02-07T05:28:43.709Z"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "content_id"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "你沒有填寫 content 資料"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Bad Request"
           }
         },
         "security": [
@@ -700,7 +870,7 @@
           "Posts-貼文"
         ],
         "summary": "取得單一貼文",
-        "description": "取得單一貼文",
+        "description": "取得單一貼文 貼文ID 測試貼文ID:67a59696de2a2ff8736e3bfe",
         "parameters": [
           {
             "name": "id",
@@ -710,10 +880,111 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "post_id"
+                      },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "example": "user_id"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "_user_name"
+                          },
+                          "photo": {
+                            "type": "string",
+                            "example": "user_photourl"
+                          }
+                        }
+                      },
+                      "likes": {
+                        "type": "array",
+                        "example": [],
+                        "items": {}
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "user_content"
+                      },
+                      "image": {},
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2025-02-07T05:13:58.442Z"
+                      },
+                      "comments": {
+                        "type": "array",
+                        "example": [],
+                        "items": {}
+                      },
+                      "id": {
+                        "type": "string",
+                        "example": "post_id"
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "無此 post ID"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 404
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/{id}/user": {
@@ -722,7 +993,7 @@
           "Posts-貼文"
         ],
         "summary": "取得個人所有貼文列表",
-        "description": "取得個人所有貼文列表",
+        "description": "取得個人所有貼文列表 user測試ID: 67a58d158898ee94cc357cbc",
         "parameters": [
           {
             "name": "id",
@@ -732,10 +1003,91 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "貼文ID"
+                      },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "example": "user_id"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "test"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "test@mail.com"
+                          },
+                          "photo": {
+                            "type": "string",
+                            "example": "userurl"
+                          },
+                          "sex": {
+                            "type": "string",
+                            "example": "male"
+                          }
+                        }
+                      },
+                      "likes": {
+                        "type": "array",
+                        "example": [],
+                        "items": {}
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "test123"
+                      },
+                      "image": {},
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2025-02-07T05:13:58.442Z"
+                      },
+                      "comments": {
+                        "type": "array",
+                        "example": [],
+                        "items": {}
+                      },
+                      "id": {
+                        "type": "string",
+                        "example": "貼文ID"
+                      }
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "目前共有1則貼文"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/{id}/comment": {
@@ -744,20 +1096,121 @@
           "Posts-貼文"
         ],
         "summary": "取新增一則貼文的留言",
-        "description": "新增一則貼文的留言",
+        "description": "新增一則貼文的留言 測試貼文ID:67a59696de2a2ff8736e3bfe",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "新增留言",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "type": "string",
+                  "example": "測試留言"
+                }
+              },
+              "required": [
+                "comment"
+              ]
+            }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "新增留言成功"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "object",
+                      "properties": {
+                        "comment": {
+                          "type": "string",
+                          "example": "測試留言"
+                        },
+                        "user": {
+                          "type": "string",
+                          "example": "User_id"
+                        },
+                        "post": {
+                          "type": "string",
+                          "example": "貼文_id"
+                        },
+                        "_id": {
+                          "type": "string",
+                          "example": "留言_id"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2025-02-07T06:39:45.883Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "留言區不能空白"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/{id}/likes": {
@@ -766,7 +1219,7 @@
           "Posts-貼文"
         ],
         "summary": "新增一則貼文的讚",
-        "description": "新增一則貼文的讚",
+        "description": "新增一則貼文的讚 貼文測試id: 67a59696de2a2ff8736e3bfe",
         "parameters": [
           {
             "name": "id",
@@ -776,10 +1229,76 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "貼文按讚成功"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "postId": {
+                      "type": "string",
+                      "example": "貼文id"
+                    },
+                    "userId": {
+                      "type": "string",
+                      "example": "User_id"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "沒有此貼文"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/{id}/unlikes": {
@@ -788,7 +1307,7 @@
           "Posts-貼文"
         ],
         "summary": "取消一則貼文的讚",
-        "description": "取消一則貼文的讚",
+        "description": "取消一則貼文的讚 貼文測試id: 67a59696de2a2ff8736e3bfe",
         "parameters": [
           {
             "name": "id",
@@ -798,10 +1317,76 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "取消貼文按讚成功"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "postId": {
+                      "type": "string",
+                      "example": "貼文id"
+                    },
+                    "userId": {
+                      "type": "string",
+                      "example": "User_id"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "沒有此貼文"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/{id}/post": {
@@ -809,8 +1394,8 @@
         "tags": [
           "Posts-貼文"
         ],
-        "summary": "取消一則貼文的讚",
-        "description": "取消一則貼文的讚",
+        "summary": "刪除一則貼文",
+        "description": "刪除一則貼文(包含留言)，請輸入貼文ID，僅只能刪除自己帳號的貼文",
         "parameters": [
           {
             "name": "id",
@@ -820,10 +1405,94 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "刪除文章成功"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "貼文ID"
+                    },
+                    "user": {
+                      "type": "string",
+                      "example": "使用者ID"
+                    },
+                    "likes": {
+                      "type": "array",
+                      "example": [],
+                      "items": {}
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "貼文內容"
+                    },
+                    "image": {},
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-02-07T06:53:16.030Z"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "貼文ID"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "不可以刪除別人的貼文"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "stack": {
+                  "type": "string",
+                  "example": "error.message"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/users/updatePassword": {

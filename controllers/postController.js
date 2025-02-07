@@ -67,16 +67,19 @@ const likepost = async (req, res, next) => {
 };
 
 const deletePostWithComments = async (req, res, next) => {
+  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   const _id = req.params.id;
-
   try {
     const post = await Post.findById({ _id: _id });
-
     if (!post) {
-      console.log("找不到此貼文");
       return next(appError(400, "沒有此貼文"));
     }
-    const deletedata = await Post.findByIdAndDelete(_id);
+    const post_id = post.user._id.toHexString();
+    if (user_id === post_id) {
+      const deletedata = await Post.findByIdAndDelete(_id);
+    } else {
+      return next(appError(400, "不可以刪除別人的貼文"));
+    }
 
     handleSuccess(res, "刪除文章成功", post);
   } catch (error) {
@@ -84,17 +87,18 @@ const deletePostWithComments = async (req, res, next) => {
   }
 };
 const deletelikepost = async (req, res, next) => {
+  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   const _id = req.params.id;
   if (!(await Post.findById({ _id: _id }))) {
     return next(appError(400, "沒有此貼文"));
   }
-  const res_data = await Post.findOneAndUpdate({ _id }, { $pull: { likes: req.user.payload?.googleId ? req.user.payload.id : req.user.id } }, { new: true }).populate({
+  const res_data = await Post.findOneAndUpdate({ _id }, { $pull: { likes: user_id } }, { new: true }).populate({
     path: "user",
     select: "name photo",
   });
   const data = {
     postId: _id,
-    userId: req.user.payload?.googleId ? req.user.payload.id : req.user.id,
+    userId: user_id,
   };
   handleSuccess(res, "取消貼文按讚成功", data);
 };
@@ -136,7 +140,7 @@ const postcomment = async (req, res, next) => {
   const post = req.params.id;
   const { comment } = req.body;
   if (!comment) {
-    return next(appError(400, "格式錯誤"));
+    return next(appError(400, "留言區不能空白"));
   }
 
   if (!(await Post.findOne({ _id: post }))) {
