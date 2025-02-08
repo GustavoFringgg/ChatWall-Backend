@@ -5,10 +5,10 @@
     "description": "ChatWall swagger api",
     "version": "1.0.0"
   },
-  "host": "localhost:3000",
+  "host": "chatwall-backend.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "securityDefinitions": {
     "apiKeyAuth": {
@@ -1839,9 +1839,8 @@
                   "example": true
                 },
                 "message": {
-                  "type": "array",
-                  "example": [],
-                  "items": {}
+                  "type": "string",
+                  "example": "追蹤成功"
                 }
               },
               "xml": {

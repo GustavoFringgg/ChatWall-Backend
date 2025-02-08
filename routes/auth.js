@@ -16,11 +16,11 @@ router.post(
     description: '註冊資訊',
     required: true,
     schema: {
-                $name: 'test',
-                $email: 'testUser@mail.com',
-                $password: '123456789A',
-                $confirmPassword:'123456789A'
-        }
+    $name: 'test',
+    $email: 'testUser@mail.com',
+    $password: '123456789A',
+    $confirmPassword:'123456789A'
+    }
     }
     #swagger.responses[201] = {
     schema: { 
@@ -37,22 +37,22 @@ router.post(
     #swagger.responses[422] = {
     schema: { 
     "message":{
-        type: "array",
-        items: {
-          type: "string",
-          examples: [
-            "暱稱不能少於兩個字元",
-            "密碼需包含至少一個字母和一個數字,並且至少6個字符長",
-            "密碼需介於 6-18 字元之間",
-            "密碼不一致！",
-            "Email 格式不正確"
-          ]
-        }},
+    type: "array",
+    items: {
+    type: "string",
+    examples: [
+    "暱稱不能少於兩個字元",
+    "密碼需包含至少一個字母和一個數字,並且至少6個字符長",
+    "密碼需介於 6-18 字元之間",
+    "密碼不一致！",
+    "Email 格式不正確"
+    ]
+    }},
     "error": {
     "statusCode": 422,
     "isOperational": true   
     },
-     "stack": "error.message"
+    "stack": "error.message"
     }
     }
     #swagger.responses[402] = {
@@ -62,7 +62,7 @@ router.post(
     "statusCode":402,
     "isOperational": true
     },
-     "stack": "error.message"
+    "stack": "error.message"
     }
     }
     #swagger.responses[409] = {
@@ -72,7 +72,7 @@ router.post(
     "statusCode": 409,
     "isOperational": true
     },
-     "stack": "error.message"
+    "stack": "error.message"
     }
     }
  */
@@ -90,9 +90,9 @@ router.post(
     description: '登入資訊',
     required:true,
     schema : {
-            $email : 'test@mail.com',
-            $password : '123456789A'
-        }
+    $email : 'test@mail.com',
+    $password : '123456789A'
+    }
     }
     #swagger.responses[201] = {
     schema: { 
@@ -116,7 +116,7 @@ router.post(
     "stack":"error.message"
     }
     }
-        #swagger.responses[402] = {
+    #swagger.responses[402] = {
     schema: { 
     "message": "帳號密碼不可為空",
     "error": {
@@ -141,9 +141,9 @@ router.get(
   schema: { 
   "message": "Token 驗證成功",
   "user": {
-    "id": "User_id",
-    "iat": 1738902806,
-    "exp": 1739075606
+  "id": "User_id",
+  "iat": 1738902806,
+  "exp": 1739075606
   }
   }
   }
@@ -181,14 +181,14 @@ router.get(
   schema: { 
   "message": "Token 驗證成功",
   "user": {
-    "_id": "user_id",
-    "name": "user_name",
-    "email": "user_email",
-    "photo": "user_photoemail",
-    "sex": "user_sex",
-    "createdAt": "2025-02-07T04:33:25.973Z",
-    "followers": [],
-    "following": []
+  "_id": "user_id",
+  "name": "user_name",
+  "email": "user_email",
+  "photo": "user_photoemail",
+  "sex": "user_sex",
+  "createdAt": "2025-02-07T04:33:25.973Z",
+  "followers": [],
+  "following": []
   }
   }
   }

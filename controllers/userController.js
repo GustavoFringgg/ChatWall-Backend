@@ -97,10 +97,6 @@ const follow = async (req, res, next) => {
       }
     );
     return handleSuccess(res, "追蹤成功", data);
-    // res.status(200).json({
-    //   status: true,
-    //   message: data.following,
-    // });
   }
 };
 
@@ -134,10 +130,6 @@ const unfollow = async (req, res, next) => {
   );
   const followingList = currentUser.following;
   return handleSuccess(res, "取消追蹤成功", followingList);
-  // res.status(200).json({
-  //   status: true,
-  //   followingList,
-  // });
 };
 
 const getFollowingList = async (req, res, next) => {
@@ -183,6 +175,7 @@ const tokencheck = async (req, res, next) => {
 };
 
 const googleapis = async (req, res, next) => {
+  let frontendCallbackUrl;
   const payload = {
     id: req.user._id,
     googleId: req.user.googleId || null,
@@ -190,8 +183,11 @@ const googleapis = async (req, res, next) => {
   const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_DAY,
   });
-  const frontendCallbackUrl = `http://localhost:5173/#/callback?token=${token}`;
-  // const frontendCallbackUrl = `https://chat-wall-frontend-v2-28cc.vercel.app//#/callback?token=${token}`;
+  if (process.env.NODE_ENV === "production") {
+    frontendCallbackUrl = `https://chat-wall-frontend-v2-28cc.vercel.app/#/callback?token=${token}`;
+  } else {
+    frontendCallbackUrl = `http://localhost:5173/#/callback?token=${token}`;
+  }
   res.redirect(frontendCallbackUrl);
 };
 
