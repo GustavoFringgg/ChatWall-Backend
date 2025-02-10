@@ -5,7 +5,12 @@
 ChatWall是一個社交媒體平台，提供用戶一般註冊/一般登入/google第三方登入，發佈動態、圖片、留言評論、貼文點讚、追蹤用戶以及線上聊天即時等功能
 
 ---
-ChatWall是基於Node.js的Express架構開發，ODM使用mongoose操控MongoDB Atlas，擁有全域錯誤管理handleErrorAsync，並使用Docker打包部屬至Render
+ChatWall為前後端分離開發<br>
+- 前端<br>
+基於Vue3、Vite的架構開發，UI framework使用Bootstrap，使用MVVM設計模式，導入第三方google登入註冊，實現socket-io即時聊天功能，並部屬至Vercel
+- 後端<br>
+基於Node.js的Express架構開發，使用MVC設計模式，在Restful規範下實現CRUD，ODM使用mongoose操控MongoDB Atlas，儲存用戶上傳圖檔至Firebase Storage，並擁有全域錯誤管理handleErrorAsync，最後使用Docker打包部屬至Render<br>
+
 
 本頁為後端repository，提供swagger文件供前端串接使用<br>
 [swagger文件](<https://chatwall-backend.onrender.com/api-doc/>) ⬅<br>
