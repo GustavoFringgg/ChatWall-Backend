@@ -4,17 +4,21 @@
 ### 專案描述
 ChatWall是一個社交媒體平台，提供用戶一般註冊/一般登入/google第三方登入，發佈動態、圖片、留言評論、貼文點讚、追蹤用戶以及線上聊天即時等功能
 
+---
+ChatWall是基於Node.js的Express架構開發，ODM使用mongoose操控MongoDB Atlas，擁有全域錯誤管理handleErrorAsync，並使用Docker打包部屬至Render
 
-此為後端repository，提供swagger文件供前端串接使用<br>
-[swagger文件](<https://chatwall-backend.onrender.com/api-doc/>) ⬅
+本頁為後端repository，提供swagger文件供前端串接使用<br>
+[swagger文件](<https://chatwall-backend.onrender.com/api-doc/>) ⬅<br>
+
+
+[前端repository]() ⬅
 
 ---
 
-### 前後端流程MVVM/MVC 架構圖
-<img src="https://firebasestorage.googleapis.com/v0/b/theodore-s-blog.appspot.com/o/%E5%80%8B%E4%BA%BA%E8%B3%87%E6%96%99%E5%A4%BE%2Fgithub%20readme%2FchatWall%2FMVC_v6.drawio.png?alt=media&token=9f5e6148-0122-47fa-a108-b5cb8887201d" width="700">
+### 前後端流程MVVM/MVC 服務架構圖
+<img src="https://firebasestorage.googleapis.com/v0/b/theodore-s-blog.appspot.com/o/%E5%80%8B%E4%BA%BA%E8%B3%87%E6%96%99%E5%A4%BE%2Fgithub%20readme%2FchatWall%2FMVC_final.drawio.png?alt=media&token=31d5f531-6c72-4293-b341-253717522d11" width="700">
 
 ---
-
 ### Features
 - ✅ 用戶註冊與登入與登出(JWT 權限驗證、Google第三方登入)
 - ✅ 修改用戶暱稱大頭貼密碼功能
@@ -51,9 +55,57 @@ npm run start:dev
 
 //正式環境模式
 npm run start:production
-
 ```
+---
+
+# Technologies & Libraries
+### Backend:
+- Node.js v20.11.1
+
+### Backend Framework:
+- express@4.16.4
+- express-rate-limit@7.4.0
+
+### Database:
+- firebase-admin@12.1.1
+- mongoose@8.9.4
+
+### Connection:
+- axios@1.7.2
+
+### Authentication:
+- jsonwebtoken@9.0.2
+- validator@13.12.0
+
+### Encryption:
+- bcryptjs@2.4.3
+- uuid@10.0.0
+
+### Image Handling:
+- image-size@1.1.1
+- multer@1.4.5-lts.1
+
+### Documentation:
+- dotenv@16.4.5
+- swagger-autogen@2.23.7
+- swagger-ui-express@5.0.1
+
+### Logging:
+- morgan@1.9.1
+
+### Passport Login:
+- passport-google-oauth20@2.0.0
+- passport@0.7.0
+
+### Real-time Connection:
+- socket.io@4.8.1
 
 ---
-## Screenshots
+
+開發者
+秉宏
+
+聯絡我<br>
+[Email](mailto:adamtsai0408@gmail.com)<br>
+[Add me on LINE](https://line.me/R/ti/p/@ethern520)
 
