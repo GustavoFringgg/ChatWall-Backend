@@ -7,7 +7,8 @@ ChatWall是一個社交媒體平台，提供用戶一般註冊/一般登入/goog
 ---
 ChatWall為前後端分離開發<br>
 - 前端<br>
-基於Vue3、Vite的架構開發，UI framework使用Bootstrap，使用MVVM設計模式，導入第三方google登入註冊，實現socket-io即時聊天功能，並部屬至Vercel
+[前端repository](<https://github.com/GustavoFringgg/ChatWall-Frontend_v2>) ⬅<br>
+基於Vue3、Vite的架構開發，UI framework使用Bootstrap，支援 RWD，適應不同裝置與螢幕尺寸，並使用MVVM設計模式，使用Pinia管理用戶狀態，導入第三方google登入註冊，實現socket-io即時聊天功能，並部屬至Vercel<br><br>
 - 後端<br>
 基於Node.js的Express架構開發，使用MVC設計模式，在Restful規範下實現CRUD，ODM使用mongoose操控MongoDB Atlas，儲存用戶上傳圖檔至Firebase Storage，並擁有全域錯誤管理handleErrorAsync，最後使用Docker打包部屬至Render<br>
 
@@ -16,7 +17,6 @@ ChatWall為前後端分離開發<br>
 [swagger文件](<https://chatwall-backend.onrender.com/api-doc/>) ⬅<br>
 
 
-[前端repository](<https://github.com/GustavoFringgg/ChatWall-Frontend_v2>) ⬅
 
 ---
 
@@ -29,7 +29,7 @@ ChatWall為前後端分離開發<br>
 - ✅ 修改用戶暱稱大頭貼密碼功能
 - ✅ 發佈貼文
 - ✅ 留言功能
-- ✅ 貼文篩選(最新貼文/最舊貼文/熱門貼文/搜索貼文)
+- ✅ 貼文篩選(最新貼文/最舊貼文/熱門貼文/關鍵字搜尋貼文)
 - ✅ 刪除貼文
 - ✅ 點讚功能
 - ✅ 追蹤用戶
@@ -75,7 +75,7 @@ npm run start:production
 - firebase-admin@12.1.1
 - mongoose@8.9.4
 
-### Connection:
+### Utilities:
 - axios@1.7.2
 
 ### Authentication:
