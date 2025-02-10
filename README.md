@@ -110,7 +110,6 @@ npm run start:production
 開發者
 秉宏
 
-聯絡我<br>
-[Email](mailto:adamtsai0408@gmail.com)<br>
-[Add me on LINE](https://line.me/R/ti/p/@ethern520)
+聯絡我: [Email](mailto:adamtsai0408@gmail.com)<br>
+LINE: ethern520
 
