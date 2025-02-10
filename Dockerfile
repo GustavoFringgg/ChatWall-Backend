@@ -11,4 +11,4 @@ ENV NODE_ENV=production
 RUN npm run swagger:production
 EXPOSE 3000
 
-CMD ["npm", "run", "./bin/www"]
+CMD ["npm", "run", "start:production"]
