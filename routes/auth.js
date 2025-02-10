@@ -5,7 +5,7 @@ const authController = require("../controllers/authController");
 const { isAuth } = require("../service/auth");
 
 router.post(
-  "/sign_Up",
+  "/sign_up",
   [handleErrorAsync(authController.sign_up)]
   /* 
     #swagger.tags = ['Auth']
@@ -79,7 +79,7 @@ router.post(
 );
 
 router.post(
-  "/sign_In",
+  "/sign_in",
   [handleErrorAsync(authController.sign_in)]
   /* 
     #swagger.tags = ['Auth']
