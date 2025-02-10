@@ -184,7 +184,7 @@ const googleapis = async (req, res, next) => {
     expiresIn: process.env.JWT_EXPIRES_DAY,
   });
   if (process.env.NODE_ENV === "production") {
-    frontendCallbackUrl = `https://chat-wall-frontend-v2-28cc.vercel.app/#/callback?token=${token}`;
+    frontendCallbackUrl = `https://chat-wall-frontend-v2.vercel.app/#/callback?token=${token}`;
   } else {
     frontendCallbackUrl = `http://localhost:5173/#/callback?token=${token}`;
   }
