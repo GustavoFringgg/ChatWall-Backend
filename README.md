@@ -5,14 +5,14 @@
 ChatWall是一個社交媒體平台，提供用戶一般註冊/一般登入/google第三方登入，發佈動態、圖片、留言評論、貼文點讚、追蹤用戶以及線上聊天即時等功能
 
 ---
-ChatWall為前後端分離開發<br>
+### ChatWall為前後端分離開發<br>
 - 前端<br>
-基於Vue3 Composition API、Vite的架構開發，UI framework使用Bootstrap，支援 RWD，適應不同裝置與螢幕尺寸，並使用MVVM設計模式，使用Pinia管理用戶狀態，導入第三方google登入註冊，實現Socket.io即時聊天功能，並部屬至Vercel<br><br>
+基於Vue3 Composition API、Vite的框架開發，UI framework使用Bootstrap，支援 RWD，適應不同裝置與螢幕尺寸，並使用MVVM設計模式，使用Pinia管理用戶狀態，使用sweetAlert2通知提醒，導入第三方google登入註冊，實現Socket.io即時聊天功能，並部屬至Vercel<br>
 [前端repository](<https://github.com/GustavoFringgg/ChatWall-Frontend_v2>) ⬅<br><br>
 - 後端<br>
-基於Node.js的Express架構開發，使用MVC設計模式開發API，使用Postman做API測試，在Restful規範下實現CRUD，ODM使用mongoose操控MongoDB Atlas，儲存用戶上傳圖檔至Firebase Storage，並擁有全域錯誤管理handleErrorAsync，最後使用Docker打包部屬至Render<br>
+基於Node.js的Express框架開發，使用MVC設計模式開發API，使用Postman做API測試，在Restful規範下實現CRUD，ODM使用**mongoose**操控資料庫**MongoDB Atlas**，儲存用戶上傳圖檔至Firebase Storage，並擁有全域錯誤管理handleErrorAsync，使用Swagger生成API文件，最後使用Docker打包部屬至Render<br>
 
-本頁為後端repository，提供swagger文件供前端串接使用<br>
+本頁為後端repository，提供Swagger文件供前端串接使用<br>
 [swagger文件](<https://chatwall-backend.onrender.com/api-doc/>) ⬅<br>
 <img src="https://firebasestorage.googleapis.com/v0/b/theodore-s-blog.appspot.com/o/%E5%80%8B%E4%BA%BA%E8%B3%87%E6%96%99%E5%A4%BE%2Fgithub%20readme%2FchatWall%2F0743.jpg?alt=media&token=799c3f7a-4f54-493d-bef2-7c6b874cfc7f" width="500">
 
