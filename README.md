@@ -23,6 +23,16 @@ ChatWall是一個社交媒體平台，提供用戶一般註冊/一般登入/goog
 <img src="https://firebasestorage.googleapis.com/v0/b/theodore-s-blog.appspot.com/o/%E5%80%8B%E4%BA%BA%E8%B3%87%E6%96%99%E5%A4%BE%2Fgithub%20readme%2FchatWall%2FMVC_final.drawio.png?alt=media&token=31d5f531-6c72-4293-b341-253717522d11" width="700">
 
 ---
+
+### MongoDB collections ER圖 (使用hackolade繪製)
+<img src="https://firebasestorage.googleapis.com/v0/b/theodore-s-blog.appspot.com/o/%E5%80%8B%E4%BA%BA%E8%B3%87%E6%96%99%E5%A4%BE%2Fgithub%20readme%2FchatWall%2F0544.jpg?alt=media&token=adf770af-da87-4f21-ab78-db34f453a871" width="700">
+
+users → posts（一對多）：一個 user 可以發多篇posts posts<br>
+users → comment（一對多）：一個 user 可以留言在不同 posts<br>
+posts → comment（一對多）：一個 post 可以有多個 comment<br>
+users → message（一對多）：一個 user 可以發送多個 message<br>
+
+---
 ### Features
 - ✅ 用戶註冊與登入與登出(JWT 權限驗證、Google第三方登入)
 - ✅ 修改用戶暱稱大頭貼密碼功能
