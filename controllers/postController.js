@@ -184,6 +184,16 @@ const getonePost = async (req, res, next) => {
   return next(appError(404, "無此 post ID"));
 };
 
+const updatePost = async (req, res, next) => {
+  const postid = req.params.id;
+  let { newContent } = req.body;
+  const updatePostinfo = await Post.findByIdAndUpdate({ _id: postid }, { content: newContent }, { new: true, runValidators: true });
+  if (!updatePostinfo) {
+    return next(appError(404, "用戶不存在"));
+  }
+  return handleSuccess(res, `資料已被更新完成`, updatePostinfo);
+};
+
 module.exports = {
   getPosts,
   postPosts,
@@ -193,4 +203,5 @@ module.exports = {
   postcomment,
   getonePost,
   deletePostWithComments,
+  updatePost,
 };

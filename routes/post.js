@@ -317,6 +317,10 @@ router
         }
     
     */
+  )
+  .patch(
+    "/:id",
+    [isAuth(false), handleErrorAsync(postController.updatePost)] // #swagger.ignore = true
   );
 
 module.exports = router;
