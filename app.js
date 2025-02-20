@@ -7,22 +7,36 @@ process.on("uncaughtException", (e) => {
 });
 
 const express = require("express");
+const app = express();
+
 const path = require("path");
 const cookieParser = require("cookie-parser");
+
+//logger
 const logger = require("morgan");
+
+//cors
 const cors = require("cors");
-const app = express();
+
+//swagger
 const swaggerUI = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json");
+
+//router限制
 const rateLimit = require("express-rate-limit");
+
+//Router
 const messagesRouter = require("./routes/message");
 const postsRouter = require("./routes/post");
 const usersRouter = require("./routes/user");
 const uploadRouter = require("./routes/upload");
 const authRouter = require("./routes/auth");
-const { log } = require("console");
+
+//導入socket.io
 require("./connections/index");
+//導入passport
 require("./connections/passport");
+
 const anotherLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, //10分鐘
   max: 100, //請求100次
@@ -45,9 +59,9 @@ app.use("/upload", uploadRouter, anotherLimiter);
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 
 if (process.env.NODE_ENV != undefined) {
-  log(process.env.NODE_ENV + "模式開啟");
+  console.log(process.env.NODE_ENV + "模式開啟");
 } else {
-  return log("模式開啟錯誤，請改用npm run start:dev 執行開發環境");
+  return console.log("模式開啟錯誤，請改用npm run start:dev 執行開發環境");
 }
 
 //router 404錯誤處理
@@ -111,9 +125,8 @@ process.on("unhandledRejection", (reason, promise) => {
 /*在Node.js中，當一個promise被拒絕並且未被處理時，就會觸發"unhandledRejection"。
 "unhandledRejection"監聽器通常放在最底端，原因如下：
 1.確保所有promise操作都已被初始化並且可被此監聽器覆蓋
-2.避免過早攔截，若將"unhandledRejection"放在最頂端，可能會導致誤判未處理*/
-
-// unhandledRejection: 用於處理未捕捉的 Promise 拒絕。當 Promise 被拒絕且沒有 catch 處理時會觸發。
-// uncaughtException: 用於處理未捕捉的同步異常。當 JavaScript 執行中出現未被 try/catch 捕捉的錯誤時會觸發。
+2.避免過早攔截，若將"unhandledRejection"放在最頂端，可能會導致誤判未處理
+unhandledRejection: 用於處理未捕捉的 Promise 拒絕。當 Promise 被拒絕且沒有 catch 處理時會觸發。
+uncaughtException: 用於處理未捕捉的同步異常。當 JavaScript 執行中出現未被 try/catch 捕捉的錯誤時會觸發。*/
 
 module.exports = app;
