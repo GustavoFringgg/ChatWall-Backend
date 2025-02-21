@@ -69,40 +69,37 @@ const getLikeList = async (req, res, next) => {
 
 const follow = async (req, res, next) => {
   const targetUserId = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-  {
-    if (req.params.user_id === targetUserId) {
-      return next(appError(401, "你無法追蹤自己", next));
-    }
-
-    if (!(await User.findOne({ _id: req.params.user_id }))) {
-      return next(appError(401, "沒有此追蹤ID", next));
-    }
-
-    const data = await User.findOneAndUpdate(
-      {
-        _id: targetUserId,
-        "following.user": { $ne: req.params.user_id },
-      },
-      {
-        $addToSet: { following: { user: req.params.user_id } },
-      }
-    );
-    await User.updateOne(
-      {
-        _id: req.params.user_id,
-        "followers.user": { $ne: targetUserId },
-      },
-      {
-        $addToSet: { followers: { user: targetUserId } },
-      }
-    );
-    return handleSuccess(res, "追蹤成功", data);
+  if (req.params.user_id === targetUserId) {
+    return next(appError(401, "你無法追蹤自己", next));
   }
+
+  if (!(await User.findOne({ _id: req.params.user_id }))) {
+    return next(appError(401, "沒有此追蹤ID", next));
+  }
+
+  const data = await User.findOneAndUpdate(
+    {
+      _id: targetUserId,
+      "following.user": { $ne: req.params.user_id },
+    },
+    {
+      $addToSet: { following: { user: req.params.user_id } },
+    }
+  );
+  await User.updateOne(
+    {
+      _id: req.params.user_id,
+      "followers.user": { $ne: targetUserId },
+    },
+    {
+      $addToSet: { followers: { user: targetUserId } },
+    }
+  );
+  return handleSuccess(res, "追蹤成功", data);
 };
 
 const unfollow = async (req, res, next) => {
   const targetUserId = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-
   if (req.params.id === targetUserId) {
     return next(appError(401, "您無法取消追蹤自己", next));
   }
