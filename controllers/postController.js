@@ -87,20 +87,16 @@ const deletePostWithComments = async (req, res, next) => {
   }
 };
 const deletelikepost = async (req, res, next) => {
-  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
+  const user_id = req.user.payload?.id || req.user.id;
   const _id = req.params.id;
-  if (!(await Post.findById({ _id: _id }))) {
-    return next(appError(400, "沒有此貼文"));
+
+  const updatedPost = await Post.findOneAndUpdate({ _id }, { $pull: { likes: user_id } }, { new: true });
+  console.log("updatpost", updatedPost);
+  if (!updatedPost) {
+    return next(appError(400, "沒有此貼文或尚未按讚"));
   }
-  const res_data = await Post.findOneAndUpdate({ _id }, { $pull: { likes: user_id } }, { new: true }).populate({
-    path: "user",
-    select: "name photo",
-  });
-  const data = {
-    postId: _id,
-    userId: user_id,
-  };
-  handleSuccess(res, "取消貼文按讚成功", data);
+
+  handleSuccess(res, "取消貼文按讚成功", { postId: _id, userId: user_id });
 };
 
 const getuserpost = async (req, res, next) => {
