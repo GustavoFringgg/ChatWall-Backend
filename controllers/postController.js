@@ -1,9 +1,9 @@
 const Post = require("../model/posts"); //模組化Post 使用大寫
 const User = require("../model/users"); //模組化User 使用大寫
 const Comments = require("../model/comments"); //模組化User 使用大寫
-const handleSuccess = require("../service/handleSuccess");
+const handleSuccess = require("../utils/handleSuccess");
 const mongoose = require("mongoose");
-const appError = require("../service/appError");
+const appError = require("../utils/appError");
 
 const getPosts = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
@@ -69,33 +69,26 @@ const likepost = async (req, res, next) => {
 const deletePostWithComments = async (req, res, next) => {
   const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   const _id = req.params.id;
-  try {
-    const post = await Post.findById({ _id: _id });
-    if (!post) {
-      return next(appError(400, "沒有此貼文"));
-    }
-    const post_id = post.user._id.toHexString();
-    if (user_id === post_id) {
-      const deletedata = await Post.findByIdAndDelete(_id);
-    } else {
-      return next(appError(400, "不可以刪除別人的貼文"));
-    }
-
-    handleSuccess(res, "刪除文章成功", post);
-  } catch (error) {
-    console.log("error:", error);
+  const post = await Post.findById({ _id: _id });
+  if (!post) {
+    return next(appError(400, "沒有此貼文"));
   }
+  const post_id = post.user._id.toHexString();
+  if (user_id === post_id) {
+    const deletedata = await Post.findByIdAndDelete(_id);
+  } else {
+    return next(appError(400, "不可以刪除別人的貼文"));
+  }
+  handleSuccess(res, "刪除文章成功", post);
 };
+
 const deletelikepost = async (req, res, next) => {
   const user_id = req.user.payload?.id || req.user.id;
   const _id = req.params.id;
-
   const updatedPost = await Post.findOneAndUpdate({ _id }, { $pull: { likes: user_id } }, { new: true });
-  console.log("updatpost", updatedPost);
   if (!updatedPost) {
     return next(appError(400, "沒有此貼文或尚未按讚"));
   }
-
   handleSuccess(res, "取消貼文按讚成功", { postId: _id, userId: user_id });
 };
 

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const handleErrorAsync = require("../service/handleErrorAsync"); //處理全域的catch
-const { isAuth } = require("../service/auth");
+const handleErrorAsync = require("../utils/handleErrorAsync"); //處理全域的catch
+const { isAuth } = require("../utils/auth");
 const userController = require("../controllers/userController");
 const passport = require("passport");
 const User = require("../model/users");

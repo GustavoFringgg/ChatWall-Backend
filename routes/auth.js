@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const handleErrorAsync = require("../service/handleErrorAsync");
+const handleErrorAsync = require("../utils/handleErrorAsync");
 const authController = require("../controllers/authController");
-const { isAuth } = require("../service/auth");
+const { isAuth } = require("../utils/auth");
 
 router.post(
   "/sign_up",

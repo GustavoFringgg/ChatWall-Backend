@@ -1,6 +1,6 @@
 const multer = require("multer");
 const path = require("path");
-const appError = require("../service/appError");
+const appError = require("./appError");
 const upload = multer({
   limits: {
     fileSize: 2 * 1024 * 1024, //處理前台檔案的資料(不超過2m)

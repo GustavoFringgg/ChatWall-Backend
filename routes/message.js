@@ -1,7 +1,7 @@
 const express = require("express");
 const messagesController = require("../controllers/messageControllers");
-const { isAuth } = require("../service/auth");
-const handleErrorAsync = require("../service/handleErrorAsync"); //處理全域的catch
+const { isAuth } = require("../utils/auth");
+const handleErrorAsync = require("../utils/handleErrorAsync"); //處理全域的catch
 const router = express.Router();
 
 // router.get("/", messagesController.getMessages);

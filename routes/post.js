@@ -4,8 +4,8 @@ const mongoose = require("mongoose");
 const Post = require("../model/posts");
 const postController = require("../controllers/postController");
 
-const { isAuth } = require("../service/auth");
-const handleErrorAsync = require("../service/handleErrorAsync");
+const { isAuth } = require("../utils/auth");
+const handleErrorAsync = require("../utils/handleErrorAsync");
 
 router
   .get(

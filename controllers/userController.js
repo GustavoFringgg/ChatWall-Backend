@@ -2,13 +2,15 @@ const Post = require("../model/posts"); //模組化Post 使用大寫
 const User = require("../model/users"); //模組化User 使用大寫
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
-const handleSuccess = require("../service/handleSuccess");
+const handleSuccess = require("../utils/handleSuccess");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const appError = require("../service/appError");
-const { generateSendJWT } = require("../service/auth");
-const firebaseAdmin = require("../service/firebase"); //使用firebase服務
+const appError = require("../utils/appError");
+const { generateSendJWT } = require("../utils/auth");
+const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
+
+const { getLikeListservice } = require("../services/postService");
 
 const profile = async (req, res, next) => {
   const id = req.params.id;
@@ -54,17 +56,10 @@ const patchprofile = async (req, res, next) => {
 };
 
 const getLikeList = async (req, res, next) => {
-  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-  const likeList = await Post.find({
-    likes: { $in: [user_id] },
-  }).populate({
-    path: "user",
-    select: "name photo",
-  });
-  res.status(200).json({
-    status: true,
-    likeList,
-  });
+  console.log("req.user", req.user);
+  const user_id = req.user.payload?.id || req.user.id;
+  const likeList = await getLikeListservice(user_id);
+  handleSuccess(res, "取得資料成功", likeList);
 };
 
 const follow = async (req, res, next) => {
