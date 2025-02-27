@@ -1,6 +1,6 @@
 const User = require("../model/users");
 const Post = require("../model/posts");
-const getLikeListservice = async (user_id) => {
+const getLikeListService = async (user_id) => {
   return await Post.find({
     likes: { $in: [user_id] },
   }).populate({
@@ -9,4 +9,4 @@ const getLikeListservice = async (user_id) => {
   });
 };
 
-module.exports = { getLikeListservice };
+module.exports = { getLikeListService };

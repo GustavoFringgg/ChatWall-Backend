@@ -10,7 +10,8 @@ const { generateSendJWT } = require("../utils/auth");
 const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
-const { getLikeListservice } = require("../services/postService");
+const { getLikeListService } = require("../services/postService");
+const { getFollowingListService } = require("../services/userService");
 
 const profile = async (req, res, next) => {
   const id = req.params.id;
@@ -58,7 +59,7 @@ const patchprofile = async (req, res, next) => {
 const getLikeList = async (req, res, next) => {
   console.log("req.user", req.user);
   const user_id = req.user.payload?.id || req.user.id;
-  const likeList = await getLikeListservice(user_id);
+  const likeList = await getLikeListService(user_id);
   handleSuccess(res, "取得資料成功", likeList);
 };
 
@@ -126,15 +127,9 @@ const unfollow = async (req, res, next) => {
 
 const getFollowingList = async (req, res, next) => {
   const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-  const currentUser = await User.findOne({ _id: user_id }).populate({
-    path: "following.user",
-    select: "name photo",
-  });
+  const currentUser = await getFollowingListService(user_id);
   const followingList = currentUser.following;
-  res.status(200).json({
-    status: true,
-    followingList,
-  });
+  return handleSuccess(res, "取得追蹤清單成功", followingList);
 };
 
 const userimage = async (req, res, next) => {

@@ -1,12 +1,10 @@
-// const User = require("../model/users");
-// const Post = require("../model/posts");
-// const getLikeListservice = async (user_id) => {
-//   return await Post.find({
-//     likes: { $in: [user_id] },
-//   }).populate({
-//     path: "user",
-//     select: "name photo",
-//   });
-// };
+const User = require("../model/users");
 
-// module.exports = { getLikeListservice };
+const getFollowingListService = async (user_id) => {
+  return await User.findOne({ _id: user_id }).populate({
+    path: "following.user",
+    select: "name photo",
+  });
+};
+
+module.exports = { getFollowingListService };
