@@ -1,10 +1,14 @@
-const Post = require("../model/posts"); //模組化Post 使用大寫
-const User = require("../model/users"); //模組化User 使用大寫
+//Model
+const Post = require("../model/posts");
+const User = require("../model/users");
+
+//third-party
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
+
+//utils
 const handleSuccess = require("../utils/handleSuccess");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const appError = require("../utils/appError");
 const { generateSendJWT } = require("../utils/auth");
 const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
@@ -57,7 +61,6 @@ const patchprofile = async (req, res, next) => {
 };
 
 const getLikeList = async (req, res, next) => {
-  console.log("req.user", req.user);
   const user_id = req.user.payload?.id || req.user.id;
   const likeList = await getLikeListService(user_id);
   handleSuccess(res, "取得資料成功", likeList);

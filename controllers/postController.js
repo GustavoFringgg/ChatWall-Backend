@@ -1,10 +1,18 @@
+//Model
+const mongoose = require("mongoose");
 const Post = require("../model/posts"); //模組化Post 使用大寫
 const User = require("../model/users"); //模組化User 使用大寫
 const Comments = require("../model/comments"); //模組化User 使用大寫
+
+//utils
 const handleSuccess = require("../utils/handleSuccess");
-const mongoose = require("mongoose");
 const appError = require("../utils/appError");
 
+//services
+const { likePostService } = require("../services/postService");
+
+//functions
+//取得貼文
 const getPosts = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
@@ -52,17 +60,11 @@ const postPosts = async (req, res, next) => {
   }
 };
 
+//按讚api
 const likepost = async (req, res, next) => {
-  const _id = req.params.id;
-
-  if (!(await Post.findById({ _id: _id }))) {
-    return next(appError(400, "沒有此貼文"));
-  }
-  await Post.findOneAndUpdate({ _id }, { $addToSet: { likes: req.user.payload?.googleId ? req.user.payload.id : req.user.id } });
-  const data = {
-    postId: _id,
-    userId: req.user.payload?.googleId ? req.user.payload.id : req.user.id,
-  };
+  const post_id = req.params.id;
+  const user_id = req.user.payload?.id || req.user.id;
+  const data = await likePostService(post_id, user_id);
   handleSuccess(res, "貼文按讚成功", data);
 };
 
