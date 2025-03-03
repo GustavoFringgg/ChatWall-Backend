@@ -19,8 +19,15 @@ const likePostService = async (post_id, user_id) => {
   return updatedPost;
 };
 
+//取消按讚
+const deleteLikePostService = async (post_id, user_id) => {
+  const updatedPost = await Post.findOneAndUpdate({ _id: post_id }, { $pull: { likes: user_id } }, { new: true });
+  if (!updatedPost) throw appError(400, "沒有此貼文");
+  return updatedPost;
+};
+
 //貼文
 const postPostsService = async (content, image, user_id) => {
   return await Post.create({ user: user_id, content, image });
 };
-module.exports = { getLikeListService, likePostService, postPostsService };
+module.exports = { getLikeListService, likePostService, postPostsService, deleteLikePostService };

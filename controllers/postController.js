@@ -7,7 +7,7 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 
 //services
-const { likePostService, postPostsService } = require("../services/postService");
+const { likePostService, postPostsService, deleteLikePostService } = require("../services/postService");
 
 //functions
 //取得貼文
@@ -85,12 +85,9 @@ const deletePostWithComments = async (req, res, next) => {
 
 const deletelikepost = async (req, res, next) => {
   const user_id = req.user.payload?.id || req.user.id;
-  const _id = req.params.id;
-  const updatedPost = await Post.findOneAndUpdate({ _id }, { $pull: { likes: user_id } }, { new: true });
-  if (!updatedPost) {
-    return next(appError(400, "沒有此貼文或尚未按讚"));
-  }
-  handleSuccess(res, "取消貼文按讚成功", { postId: _id, userId: user_id });
+  const post_id = req.params.id;
+  const updatedPost = await deleteLikePostService(post_id, user_id);
+  handleSuccess(res, "取消貼文按讚成功", updatedPost);
 };
 
 const getuserpost = async (req, res, next) => {
