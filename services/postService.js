@@ -30,4 +30,12 @@ const deleteLikePostService = async (post_id, user_id) => {
 const postPostsService = async (content, image, user_id) => {
   return await Post.create({ user: user_id, content, image });
 };
-module.exports = { getLikeListService, likePostService, postPostsService, deleteLikePostService };
+
+//更新貼文
+const updatePostService = async (post_id, newcontent) => {
+  const updatePostinfo = await Post.findByIdAndUpdate({ _id: post_id }, { content: newcontent }, { new: true, runValidators: true });
+  if (!updatePostinfo) throw appError(400, "用戶不存在");
+  return updatePostinfo;
+};
+
+module.exports = { getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService };

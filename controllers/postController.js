@@ -7,7 +7,7 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 
 //services
-const { likePostService, postPostsService, deleteLikePostService } = require("../services/postService");
+const { likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
 
 //functions
 //取得貼文
@@ -171,14 +171,12 @@ const getonePost = async (req, res, next) => {
   return next(appError(404, "無此 post ID"));
 };
 
+//更新貼文API
 const updatePost = async (req, res, next) => {
-  const postid = req.params.id;
+  const post_id = req.params.id;
   let { newContent } = req.body;
-  const updatePostinfo = await Post.findByIdAndUpdate({ _id: postid }, { content: newContent }, { new: true, runValidators: true });
-  if (!updatePostinfo) {
-    return next(appError(404, "用戶不存在"));
-  }
-  return handleSuccess(res, `資料已被更新完成`, updatePostinfo);
+  const updatePostinfo = await updatePostService(post_id, newContent);
+  handleSuccess(res, `資料已被更新完成`, updatePostinfo);
 };
 
 module.exports = {
