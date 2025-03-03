@@ -5,17 +5,16 @@ const User = require("../model/users");
 //third-party
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 //utils
 const handleSuccess = require("../utils/handleSuccess");
-const jwt = require("jsonwebtoken");
 const appError = require("../utils/appError");
 const { generateSendJWT } = require("../utils/auth");
-const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
-const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
-
 const { getLikeListService } = require("../services/postService");
 const { getFollowingListService } = require("../services/userService");
+const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
+const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
 const profile = async (req, res, next) => {
   const id = req.params.id;

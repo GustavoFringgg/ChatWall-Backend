@@ -18,4 +18,9 @@ const likePostService = async (post_id, user_id) => {
   if (!updatedPost) throw appError(400, "沒有此貼文");
   return updatedPost;
 };
-module.exports = { getLikeListService, likePostService };
+
+//貼文
+const postPostsService = async (content, image, user_id) => {
+  return await Post.create({ user: user_id, content, image });
+};
+module.exports = { getLikeListService, likePostService, postPostsService };

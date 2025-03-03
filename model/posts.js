@@ -46,7 +46,6 @@ postSchema.pre(/^findOneAndDelete/, async function (next) {
   // const query = this; // `this` 是查詢物件
   const query = this.getQuery(); // `this` 是查詢物件
   const commentreturn = await Comment.deleteMany({ post: query._id });
-  console.log("commentreturn", commentreturn);
   next();
 });
 const Post = mongoose.model("Postmodel", postSchema);

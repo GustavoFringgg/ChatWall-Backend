@@ -1,7 +1,5 @@
 //Model
-const mongoose = require("mongoose");
 const Post = require("../model/posts"); //模組化Post 使用大寫
-const User = require("../model/users"); //模組化User 使用大寫
 const Comments = require("../model/comments"); //模組化User 使用大寫
 
 //utils
@@ -9,7 +7,7 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 
 //services
-const { likePostService } = require("../services/postService");
+const { likePostService, postPostsService } = require("../services/postService");
 
 //functions
 //取得貼文
@@ -49,11 +47,12 @@ const getPosts = async (req, res, next) => {
   } else return handleSuccess(res, "尚未找到任何貼文", []);
 };
 
-//****post****
+//貼文API
 const postPosts = async (req, res, next) => {
   const { content, image } = req.body;
+  const user_id = req.user.payload?.id || req.user.id;
   if (content != undefined && content.trim()) {
-    const new_post = await Post.create({ user: req.user.payload?.googleId ? req.user.payload.id : req.user.id, content, image });
+    const new_post = await postPostsService(content, image, user_id);
     return handleSuccess(res, "新增貼文成功", new_post);
   } else {
     return next(appError(400, "你沒有填寫 content 資料"));
