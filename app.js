@@ -58,6 +58,10 @@ app.use("/api/messages", messagesRouter);
 app.use("/upload", uploadRouter, anotherLimiter);
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 
+app.get("/health", (res, res) => {
+  res.status(200).json({ status: "OK" });
+});
+
 if (process.env.NODE_ENV != undefined) {
   console.log(process.env.NODE_ENV + "模式開啟");
 } else {
