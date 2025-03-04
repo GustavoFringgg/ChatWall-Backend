@@ -8,8 +8,6 @@ if (process.env.NODE_ENV === "production") {
 } else {
   baseURL = "localhost:3000";
 }
-console.log("env", process.env.NODE_ENV);
-console.log("baseURL", baseURL);
 const doc = {
   //會有info物件
   info: {

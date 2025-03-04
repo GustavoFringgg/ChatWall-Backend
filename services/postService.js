@@ -1,5 +1,6 @@
 const User = require("../model/users");
 const Post = require("../model/posts");
+const Comments = require("../model/comments");
 const appError = require("../utils/appError");
 
 //取得按讚清單
@@ -38,4 +39,9 @@ const updatePostService = async (post_id, newcontent) => {
   return updatePostinfo;
 };
 
-module.exports = { getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService };
+//新增留言
+const postcommentService = async (post_id, user_id, comment) => {
+  if (!(await Post.findOne({ _id: post_id }))) throw appError(400, "沒有此貼文");
+  return await Comments.create({ post: post_id, user: user_id, comment });
+};
+module.exports = { getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService, postcommentService };

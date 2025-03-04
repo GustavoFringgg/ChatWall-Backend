@@ -1,10 +1,15 @@
+//Model
 const User = require("../model/users");
+
+//third-party
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
-const mongoose = require("mongoose");
+
+//utils
 const appError = require("../utils/appError");
-const jwt = require("jsonwebtoken");
 const { generateSendJWT } = require("../utils/auth");
+
+//functions
 const sign_up = async (req, res, next) => {
   let { email, password, confirmPassword, name } = req.body;
 

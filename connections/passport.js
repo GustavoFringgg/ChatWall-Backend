@@ -18,9 +18,7 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, next) {
       try {
-        console.log("user.js-profile", profile);
         const user = await User.findOrCreate({ googleId: profile.id, name: profile.displayName, email: profile.emails[0].value, photo: profile.photos[0].value });
-        console.log("user.js", user);
         return next(null, user);
       } catch (error) {
         return next(error);

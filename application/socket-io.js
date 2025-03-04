@@ -33,10 +33,6 @@ function connectSocketIo(server) {
         content,
         createdAt: new Date(),
       });
-
-      // } catch (error) {
-      //   console.error(error);
-      // }
     });
   });
   setInterval(async () => {

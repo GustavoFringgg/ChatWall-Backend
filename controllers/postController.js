@@ -1,13 +1,12 @@
 //Model
 const Post = require("../model/posts"); //模組化Post 使用大寫
-const Comments = require("../model/comments"); //模組化User 使用大寫
 
 //utils
 const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 
 //services
-const { likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
+const { postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
 
 //functions
 //取得貼文
@@ -83,6 +82,7 @@ const deletePostWithComments = async (req, res, next) => {
   handleSuccess(res, "刪除文章成功", post);
 };
 
+//取消按讚API
 const deletelikepost = async (req, res, next) => {
   const user_id = req.user.payload?.id || req.user.id;
   const post_id = req.params.id;
@@ -122,28 +122,14 @@ const getuserpost = async (req, res, next) => {
   } else return handleSuccess(res, "尚未找到任何貼文", []);
 };
 
+//新增留言API
 const postcomment = async (req, res, next) => {
-  const user = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-  const post = req.params.id;
+  const user_id = req.user.payload?.id || req.user.id;
+  const post_id = req.params.id;
   const { comment } = req.body;
-  if (!comment) {
-    return next(appError(400, "留言區不能空白"));
-  }
-
-  if (!(await Post.findOne({ _id: post }))) {
-    return next(appError(400, "沒有此貼文"));
-  }
-
-  const newComment = await Comments.create({
-    post,
-    user,
-    comment,
-  });
-  const data = {
-    comments: newComment,
-  };
-
-  handleSuccess(res, "新增留言成功", data);
+  if (!comment) return next(appError(400, "留言區空白"));
+  const newComment = await postcommentService(post_id, user_id, comment);
+  handleSuccess(res, "新增留言成功", { comments: newComment });
 };
 
 const getonePost = async (req, res, next) => {

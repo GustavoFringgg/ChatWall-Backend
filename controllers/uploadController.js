@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const appError = require("../utils/appError");
 const sizeOf = require("image-size");
-const { ImgurClient } = require("imgur");
 const { v4: uuidv4 } = require("uuid");
 const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
