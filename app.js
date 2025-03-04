@@ -58,7 +58,7 @@ app.use("/api/messages", messagesRouter);
 app.use("/upload", uploadRouter, anotherLimiter);
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 
-app.get("/health", (res, res) => {
+app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
