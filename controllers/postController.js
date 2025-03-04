@@ -6,7 +6,7 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 
 //services
-const { postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
+const { deletePostWithCommentsService, postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
 
 //functions
 //取得貼文
@@ -46,48 +46,11 @@ const getPosts = async (req, res, next) => {
   } else return handleSuccess(res, "尚未找到任何貼文", []);
 };
 
-//貼文API
-const postPosts = async (req, res, next) => {
-  const { content, image } = req.body;
-  const user_id = req.user.payload?.id || req.user.id;
-  if (content != undefined && content.trim()) {
-    const new_post = await postPostsService(content, image, user_id);
-    return handleSuccess(res, "新增貼文成功", new_post);
-  } else {
-    return next(appError(400, "你沒有填寫 content 資料"));
-  }
-};
-
-//按讚api
-const likepost = async (req, res, next) => {
-  const post_id = req.params.id;
-  const user_id = req.user.payload?.id || req.user.id;
-  const data = await likePostService(post_id, user_id);
-  handleSuccess(res, "貼文按讚成功", data);
-};
-
 const deletePostWithComments = async (req, res, next) => {
-  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-  const _id = req.params.id;
-  const post = await Post.findById({ _id: _id });
-  if (!post) {
-    return next(appError(400, "沒有此貼文"));
-  }
-  const post_id = post.user._id.toHexString();
-  if (user_id === post_id) {
-    const deletedata = await Post.findByIdAndDelete(_id);
-  } else {
-    return next(appError(400, "不可以刪除別人的貼文"));
-  }
-  handleSuccess(res, "刪除文章成功", post);
-};
-
-//取消按讚API
-const deletelikepost = async (req, res, next) => {
-  const user_id = req.user.payload?.id || req.user.id;
   const post_id = req.params.id;
-  const updatedPost = await deleteLikePostService(post_id, user_id);
-  handleSuccess(res, "取消貼文按讚成功", updatedPost);
+  const user_id = req.user.payload?.id || req.user.id;
+  const data = await deletePostWithCommentsService(post_id, user_id);
+  handleSuccess(res, "刪除文章成功", data);
 };
 
 const getuserpost = async (req, res, next) => {
@@ -122,16 +85,6 @@ const getuserpost = async (req, res, next) => {
   } else return handleSuccess(res, "尚未找到任何貼文", []);
 };
 
-//新增留言API
-const postcomment = async (req, res, next) => {
-  const user_id = req.user.payload?.id || req.user.id;
-  const post_id = req.params.id;
-  const { comment } = req.body;
-  if (!comment) return next(appError(400, "留言區空白"));
-  const newComment = await postcommentService(post_id, user_id, comment);
-  handleSuccess(res, "新增留言成功", { comments: newComment });
-};
-
 const getonePost = async (req, res, next) => {
   const id = req.params.id;
   let post = await Post.findOne({ _id: id })
@@ -155,6 +108,40 @@ const getonePost = async (req, res, next) => {
     });
   }
   return next(appError(404, "無此 post ID"));
+};
+
+//貼文API
+const postPosts = async (req, res, next) => {
+  const { content, image } = req.body;
+  const user_id = req.user.payload?.id || req.user.id;
+  const new_post = await postPostsService(content, image, user_id);
+  handleSuccess(res, "新增貼文成功", new_post);
+};
+
+//按讚API
+const likepost = async (req, res, next) => {
+  const post_id = req.params.id;
+  const user_id = req.user.payload?.id || req.user.id;
+  const data = await likePostService(post_id, user_id);
+  handleSuccess(res, "貼文按讚成功", data);
+};
+
+//取消按讚API
+const deletelikepost = async (req, res, next) => {
+  const post_id = req.params.id;
+  const user_id = req.user.payload?.id || req.user.id;
+  const updatedPost = await deleteLikePostService(post_id, user_id);
+  handleSuccess(res, "取消貼文按讚成功", updatedPost);
+};
+
+//新增留言API
+const postcomment = async (req, res, next) => {
+  const post_id = req.params.id;
+  const user_id = req.user.payload?.id || req.user.id;
+  const { comment } = req.body;
+  if (!comment) return next(appError(400, "留言區空白"));
+  const newComment = await postcommentService(post_id, user_id, comment);
+  handleSuccess(res, "新增留言成功", { comments: newComment });
 };
 
 //更新貼文API

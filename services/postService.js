@@ -44,4 +44,13 @@ const postcommentService = async (post_id, user_id, comment) => {
   if (!(await Post.findOne({ _id: post_id }))) throw appError(400, "沒有此貼文");
   return await Comments.create({ post: post_id, user: user_id, comment });
 };
-module.exports = { getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService, postcommentService };
+
+//刪除留言
+const deletePostWithCommentsService = async (post_id, user_id) => {
+  const findpostinfo = await Post.findOne({ _id: post_id });
+  if (!findpostinfo) throw appError(400, "沒有此貼文");
+  const post_user_id = findpostinfo.user._id.toHexString();
+  if (user_id !== post_user_id) throw appError(400, "不可以刪除別人的貼文");
+  return await Post.findByIdAndDelete({ _id: post_id });
+};
+module.exports = { getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService, postcommentService, deletePostWithCommentsService };
