@@ -53,4 +53,14 @@ const deletePostWithCommentsService = async (post_id, user_id) => {
   if (user_id !== post_user_id) throw appError(400, "不可以刪除別人的貼文");
   return await Post.findByIdAndDelete({ _id: post_id });
 };
-module.exports = { getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService, postcommentService, deletePostWithCommentsService };
+
+const getonePostService = async (post_id) => {
+  const post = await Post.findOne({ _id: post_id })
+    .populate({ path: "user", select: "name photo" })
+    .populate({ path: "comments", select: "comment createdAt", options: { sort: { createdAt: -1 } } })
+    .populate({ path: "likes", select: "name" });
+  if (!post) throw appError(400, "無此貼文ID");
+  return post;
+};
+
+module.exports = { getonePostService, getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService, postcommentService, deletePostWithCommentsService };

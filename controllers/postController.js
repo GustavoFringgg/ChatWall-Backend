@@ -6,7 +6,7 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 
 //services
-const { deletePostWithCommentsService, postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
+const { getonePostService, deletePostWithCommentsService, postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
 
 //functions
 //取得貼文
@@ -46,13 +46,6 @@ const getPosts = async (req, res, next) => {
   } else return handleSuccess(res, "尚未找到任何貼文", []);
 };
 
-const deletePostWithComments = async (req, res, next) => {
-  const post_id = req.params.id;
-  const user_id = req.user.payload?.id || req.user.id;
-  const data = await deletePostWithCommentsService(post_id, user_id);
-  handleSuccess(res, "刪除文章成功", data);
-};
-
 const getuserpost = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
@@ -85,29 +78,11 @@ const getuserpost = async (req, res, next) => {
   } else return handleSuccess(res, "尚未找到任何貼文", []);
 };
 
+//取得單一貼文API
 const getonePost = async (req, res, next) => {
-  const id = req.params.id;
-  let post = await Post.findOne({ _id: id })
-    .populate({
-      path: "user",
-      select: "name photo",
-    })
-    .populate({
-      path: "comments",
-      select: "comment createdAt",
-      options: { sort: { createdAt: -1 } },
-    })
-    .populate({
-      path: "likes",
-      select: "name",
-    });
-  if (post) {
-    return res.status(200).json({
-      status: true,
-      message: [post],
-    });
-  }
-  return next(appError(404, "無此 post ID"));
+  const post_id = req.params.id;
+  const post = await getonePostService(post_id);
+  handleSuccess(res, "取得貼文成功", [post]);
 };
 
 //貼文API
@@ -150,6 +125,14 @@ const updatePost = async (req, res, next) => {
   let { newContent } = req.body;
   const updatePostinfo = await updatePostService(post_id, newContent);
   handleSuccess(res, `資料已被更新完成`, updatePostinfo);
+};
+
+//刪除貼文留言API
+const deletePostWithComments = async (req, res, next) => {
+  const post_id = req.params.id;
+  const user_id = req.user.payload?.id || req.user.id;
+  const data = await deletePostWithCommentsService(post_id, user_id);
+  handleSuccess(res, "刪除文章成功", data);
 };
 
 module.exports = {
