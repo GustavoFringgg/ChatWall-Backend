@@ -12,17 +12,15 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 const { generateSendJWT } = require("../utils/auth");
 const { getLikeListService } = require("../services/postService");
-const { getFollowingListService } = require("../services/userService");
+const { getFollowingListService, getMemberProfileServeice } = require("../services/userService");
 const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
+//取得會員資料API
 const profile = async (req, res, next) => {
-  const id = req.params.id;
-  const userInfo = await User.findOne({ _id: id });
-  if (!userInfo) {
-    return next(appError(404, "找不到此會員", next));
-  }
-  handleSuccess(res, "取得個人資料", userInfo);
+  const user_id = req.params.id;
+  const user_info = await getMemberProfileServeice(user_id);
+  handleSuccess(res, "取得個人資料", user_info);
 };
 
 const updatePassword = async (req, res, next) => {
@@ -131,7 +129,7 @@ const getFollowingList = async (req, res, next) => {
   const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   const currentUser = await getFollowingListService(user_id);
   const followingList = currentUser.following;
-  return handleSuccess(res, "取得追蹤清單成功", followingList);
+  handleSuccess(res, "取得追蹤清單成功", followingList);
 };
 
 const userimage = async (req, res, next) => {

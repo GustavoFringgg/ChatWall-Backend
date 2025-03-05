@@ -54,6 +54,7 @@ const deletePostWithCommentsService = async (post_id, user_id) => {
   return await Post.findByIdAndDelete({ _id: post_id });
 };
 
+//取得單一貼文
 const getonePostService = async (post_id) => {
   const post = await Post.findOne({ _id: post_id })
     .populate({ path: "user", select: "name photo" })
