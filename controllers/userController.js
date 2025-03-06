@@ -12,14 +12,14 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 const { generateSendJWT } = require("../utils/auth");
 const { getLikeListService } = require("../services/postService");
-const { getFollowingListService, getMemberProfileServeice } = require("../services/userService");
+const { patchProfileService, getFollowingListService, getMemberProfileService } = require("../services/userService");
 const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
 //取得會員資料API
 const profile = async (req, res, next) => {
   const user_id = req.params.id;
-  const user_info = await getMemberProfileServeice(user_id);
+  const user_info = await getMemberProfileService(user_id);
   handleSuccess(res, "取得個人資料", user_info);
 };
 
@@ -47,20 +47,12 @@ const updatePassword = async (req, res, next) => {
   generateSendJWT(user, res);
 };
 
+//更新會員資料API
 const patchprofile = async (req, res, next) => {
-  const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-  let { name, sex, photo } = req.body;
-  const updateuserinfo = await User.findByIdAndUpdate(user_id, { name, sex, photo }, { new: true, runValidators: true });
-  if (!updateuserinfo) {
-    return next(appError(404, "用戶不存在"));
-  }
-  return handleSuccess(res, `資料已被更新為${updateuserinfo.name}`, updateuserinfo);
-};
-
-const getLikeList = async (req, res, next) => {
   const user_id = req.user.payload?.id || req.user.id;
-  const likeList = await getLikeListService(user_id);
-  handleSuccess(res, "取得資料成功", likeList);
+  let { name, sex, photo } = req.body;
+  const updateuserinfo = await patchProfileService(user_id, name, sex, photo);
+  handleSuccess(res, `資料已被更新為${updateuserinfo.name}`, updateuserinfo);
 };
 
 const follow = async (req, res, next) => {
@@ -125,6 +117,7 @@ const unfollow = async (req, res, next) => {
   return handleSuccess(res, "取消追蹤成功", followingList);
 };
 
+//取得追蹤清單API
 const getFollowingList = async (req, res, next) => {
   const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   const currentUser = await getFollowingListService(user_id);
@@ -132,35 +125,14 @@ const getFollowingList = async (req, res, next) => {
   handleSuccess(res, "取得追蹤清單成功", followingList);
 };
 
-const userimage = async (req, res, next) => {
-  const { id } = req.params;
-  if (!id) {
-    return next(appError(400, "請提供圖片ID", next));
-  }
-
-  const folder = "image_user"; // 根據上傳時的資料夾名稱
-  const filePath = `${folder}/${id}`;
-
-  try {
-    // 刪除圖片
-    await bucket.file(filePath).delete();
-    res.send({
-      status: true,
-      message: "圖片刪除成功",
-    });
-  } catch (err) {
-    return next(appError(500, err.errors[0].reason, next));
-  }
+//取的按讚清單API(from post model)
+const getLikeList = async (req, res, next) => {
+  const user_id = req.user.payload?.id || req.user.id;
+  const likeList = await getLikeListService(user_id);
+  handleSuccess(res, "取得資料成功", likeList);
 };
 
-const tokencheck = async (req, res, next) => {
-  try {
-    res.status(200).json({ message: "Token 驗證成功", user: req.user });
-  } catch (error) {
-    next(error);
-  }
-};
-
+//google登入API
 const googleapis = async (req, res, next) => {
   let frontendCallbackUrl;
   const payload = {
@@ -178,6 +150,25 @@ const googleapis = async (req, res, next) => {
   res.redirect(frontendCallbackUrl);
 };
 
+// const userimage = async (req, res, next) => {
+//   const { id } = req.params;
+//   if (!id) {
+//     return next(appError(400, "請提供圖片ID", next));
+//   }
+//   const folder = "image_user"; // 根據上傳時的資料夾名稱
+//   const filePath = `${folder}/${id}`;
+//   try {
+// 刪除圖片
+//     await bucket.file(filePath).delete();
+//     res.send({
+//       status: true,
+//       message: "圖片刪除成功",
+//     });
+//   } catch (err) {
+//     return next(appError(500, err.errors[0].reason, next));
+//   }
+// };
+
 module.exports = {
   profile,
   updatePassword,
@@ -186,7 +177,5 @@ module.exports = {
   follow,
   unfollow,
   getFollowingList,
-  userimage,
-  tokencheck,
   googleapis,
 };

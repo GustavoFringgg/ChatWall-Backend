@@ -75,10 +75,6 @@ const sign_in = async (req, res, next) => {
 };
 
 const tokencheck = async (req, res, next) => {
-  try {
-    res.status(200).json({ message: "Token 驗證成功", user: req.user });
-  } catch (error) {
-    next(error);
-  }
+  res.status(200).json({ message: "Token 驗證成功", user: req.user });
 };
 module.exports = { sign_in, sign_up, tokencheck };
