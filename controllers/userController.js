@@ -12,7 +12,7 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 const { generateSendJWT } = require("../utils/auth");
 const { getLikeListService } = require("../services/postService");
-const { patchProfileService, getFollowingListService, getMemberProfileService } = require("../services/userService");
+const { updatePasswordService, userInfoIncludePassword, patchProfileService, getFollowingListService, getMemberProfileService } = require("../services/userService");
 const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
 const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
 
@@ -23,36 +23,18 @@ const profile = async (req, res, next) => {
   handleSuccess(res, "取得個人資料", user_info);
 };
 
+//更新會員密碼API
 const updatePassword = async (req, res, next) => {
   let { oldPassword, newPassword, confirmPassword } = req.body;
-
-  if (newPassword !== confirmPassword) {
-    return next(appError(400, "密碼不一致！", next));
-  }
-  const userInfo = await User.findOne({ _id: req.user.id }).select("+password");
-  if (!userInfo) {
-    return next(appError(401, "查無此人", next));
-  }
+  if (newPassword !== confirmPassword) return next(appError(400, "密碼不一致！", next));
+  const user_id = req.user.id;
+  const userInfo = await userInfoIncludePassword(user_id);
   const auth = await bcrypt.compare(oldPassword, userInfo.password);
-  if (!auth) {
-    return next(appError(401, "密碼輸入錯誤", next));
-  }
-  if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(newPassword)) {
-    return next(appError(400, "密碼需包含至少一個字母和一個數字,並且至少8個字符長"));
-  }
+  if (!auth) return next(appError(401, "密碼輸入錯誤", next));
+  if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(newPassword)) return next(appError(400, "密碼需包含至少一個字母和一個數字,並且至少8個字符長"));
   newPassword = await bcrypt.hash(newPassword, 12);
-  const user = await User.findByIdAndUpdate(req.user.id, {
-    password: newPassword,
-  });
+  const user = await updatePasswordService(user_id, newPassword);
   generateSendJWT(user, res);
-};
-
-//更新會員資料API
-const patchprofile = async (req, res, next) => {
-  const user_id = req.user.payload?.id || req.user.id;
-  let { name, sex, photo } = req.body;
-  const updateuserinfo = await patchProfileService(user_id, name, sex, photo);
-  handleSuccess(res, `資料已被更新為${updateuserinfo.name}`, updateuserinfo);
 };
 
 const follow = async (req, res, next) => {
@@ -115,6 +97,14 @@ const unfollow = async (req, res, next) => {
   );
   const followingList = currentUser.following;
   return handleSuccess(res, "取消追蹤成功", followingList);
+};
+
+//更新會員資料API
+const patchprofile = async (req, res, next) => {
+  const user_id = req.user.payload?.id || req.user.id;
+  let { name, sex, photo } = req.body;
+  const updateuserinfo = await patchProfileService(user_id, name, sex, photo);
+  handleSuccess(res, `資料已被更新為${updateuserinfo.name}`, updateuserinfo);
 };
 
 //取得追蹤清單API

@@ -2,7 +2,7 @@ const handleErrorAsync = (func) => {
   return (req, res, next) => {
     //再執行函式，async 可再用 catch 統一捕捉
     func(req, res, next).catch((error) => {
-      return next(error);
+      next(error);
     });
   };
 };

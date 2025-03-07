@@ -17,18 +17,13 @@ const isAuth = (fetchUser = true) => {
     // 驗證 token 正確性
     const decoded = await new Promise((resolve, reject) => {
       jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-        if (err) {
-          return next(appError(400, "token效期過期請重新登入"));
-        } else {
-          resolve(payload);
-        }
+        if (err) return next(appError(400, "token效期過期請重新登入"));
+        else resolve(payload);
       });
     });
     if (fetchUser) {
       const currentUser = await User.findById(decoded.payload?.googleId ? decoded.payload.id : decoded.id).select("+email +createdAt");
-      if (!currentUser) {
-        return next(appError(401, "用戶不存在"));
-      }
+      if (!currentUser) return next(appError(401, "用戶不存在"));
       //currentUser =>整包會員資料
       req.user = currentUser;
     } else {

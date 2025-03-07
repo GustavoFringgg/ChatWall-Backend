@@ -22,5 +22,15 @@ const patchProfileService = async (user_id, name, sex, photo) => {
   if (!update_user_info) throw appError(400, "找不到此會員");
   return update_user_info;
 };
+//取得會員資料含密碼
+const userInfoIncludePassword = async (user_id) => {
+  const user_info = await User.findOne({ _id: user_id }).select("+password");
+  if (!user_info) throw appError("找不到此會員");
+  return user_info;
+};
 
-module.exports = { patchProfileService, getMemberProfileService, getFollowingListService };
+//更新會員密碼
+const updatePasswordService = async (user_id, new_password) => {
+  return await User.findByIdAndUpdate(user_id, { password: new_password });
+};
+module.exports = { updatePasswordService, userInfoIncludePassword, patchProfileService, getMemberProfileService, getFollowingListService };
