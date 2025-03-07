@@ -1,6 +1,7 @@
-const User = require("../model/users");
+//Models
 const Post = require("../model/posts");
 const Comments = require("../model/comments");
+//Utils
 const appError = require("../utils/appError");
 
 //取得按讚清單

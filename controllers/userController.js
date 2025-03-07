@@ -1,18 +1,13 @@
-//Model
-const Post = require("../model/posts");
-const User = require("../model/users");
-
-//third-party
+//Third-party
 const bcrypt = require("bcryptjs");
-const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
-//utils
+//Utils
 const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 const { generateSendJWT } = require("../utils/auth");
 const { getLikeListService } = require("../services/postService");
-const { followUserService, updatePasswordService, userInfoIncludePassword, patchProfileService, getFollowingListService, getMemberProfileService } = require("../services/userService");
+const { unfollowUserService, followUserService, updatePasswordService, userInfoIncludePassword, patchProfileService, getFollowingListService, getMemberProfileService } = require("../services/userService");
 
 //取得會員資料API
 const profile = async (req, res) => {
@@ -39,44 +34,22 @@ const updatePassword = async (req, res, next) => {
 const follow = async (req, res, next) => {
   const user_id = req.user.payload?.id || req.user.id;
   const target_user_id = req.params.user_id;
-  if (target_user_id === user_id) return next(appError(401, "你無法追蹤自己", next));
+  if (target_user_id === user_id) return next(appError(401, "你無法追蹤自己"));
   const data = await followUserService(user_id, target_user_id);
   return handleSuccess(res, "追蹤成功", data);
 };
 
+//取消追蹤會員API
 const unfollow = async (req, res, next) => {
-  const targetUserId = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-  if (req.params.id === targetUserId) {
-    return next(appError(401, "您無法取消追蹤自己", next));
-  }
-  const currentUser = await User.findOneAndUpdate(
-    {
-      _id: targetUserId,
-    },
-    {
-      $pull: { following: { user: req.params.id } },
-    },
-    {
-      new: true,
-    }
-  ).populate({
-    path: "following.user",
-    select: "name photo",
-  });
-  await User.updateOne(
-    {
-      _id: req.params.id,
-    },
-    {
-      $pull: { followers: { user: targetUserId } },
-    }
-  );
-  const followingList = currentUser.following;
-  return handleSuccess(res, "取消追蹤成功", followingList);
+  const user_id = req.user.payload?.id || req.user.id;
+  const target_user_id = req.params.id;
+  if (target_user_id === user_id) return next(appError(401, "你無法取消追蹤自己"));
+  const data = await unfollowUserService(user_id, target_user_id);
+  return handleSuccess(res, "取消追蹤成功", data.following);
 };
 
 //更新會員資料API
-const patchprofile = async (req, res) => {
+const patchProfile = async (req, res) => {
   const user_id = req.user.payload?.id || req.user.id;
   let { name, sex, photo } = req.body;
   const updateuserinfo = await patchProfileService(user_id, name, sex, photo);
@@ -138,7 +111,7 @@ const googleapis = async (req, res) => {
 module.exports = {
   profile,
   updatePassword,
-  patchprofile,
+  patchProfile,
   getLikeList,
   follow,
   unfollow,

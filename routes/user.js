@@ -97,7 +97,7 @@ router
   )
   .patch(
     "/profile/",
-    [isAuth(false), handleErrorAsync(userController.patchprofile)]
+    [isAuth(false), handleErrorAsync(userController.patchProfile)]
     /*
     #swagger.tags=['Users-會員']
     #swagger.summary = '更新會員資料'

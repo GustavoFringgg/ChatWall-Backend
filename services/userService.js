@@ -1,4 +1,6 @@
+//Model
 const User = require("../model/users");
+//Utils
 const appError = require("../utils/appError");
 
 //取得追蹤清單
@@ -57,4 +59,28 @@ const followUserService = async (user_id, target_user_id) => {
   );
   return data;
 };
-module.exports = { followUserService, updatePasswordService, userInfoIncludePassword, patchProfileService, getMemberProfileService, getFollowingListService };
+
+//取消追蹤會員
+const unfollowUserService = async (user_id, target_user_id) => {
+  const data = await User.findByIdAndUpdate(
+    {
+      _id: user_id,
+    },
+    {
+      $pull: { following: { user: target_user_id } },
+    },
+    {
+      new: true,
+    }
+  ).populate({ path: "following.user", select: "name photo" });
+  await User.updateOne(
+    {
+      _id: target_user_id,
+    },
+    {
+      $pull: { followers: { user: user_id } },
+    }
+  );
+  return data;
+};
+module.exports = { unfollowUserService, followUserService, updatePasswordService, userInfoIncludePassword, patchProfileService, getMemberProfileService, getFollowingListService };
