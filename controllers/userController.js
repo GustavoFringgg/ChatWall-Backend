@@ -12,12 +12,10 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 const { generateSendJWT } = require("../utils/auth");
 const { getLikeListService } = require("../services/postService");
-const { updatePasswordService, userInfoIncludePassword, patchProfileService, getFollowingListService, getMemberProfileService } = require("../services/userService");
-const firebaseAdmin = require("../utils/firebase"); //使用firebase服務
-const bucket = firebaseAdmin.storage().bucket(); //使用firestorage服務
+const { followUserService, updatePasswordService, userInfoIncludePassword, patchProfileService, getFollowingListService, getMemberProfileService } = require("../services/userService");
 
 //取得會員資料API
-const profile = async (req, res, next) => {
+const profile = async (req, res) => {
   const user_id = req.params.id;
   const user_info = await getMemberProfileService(user_id);
   handleSuccess(res, "取得個人資料", user_info);
@@ -28,43 +26,21 @@ const updatePassword = async (req, res, next) => {
   let { oldPassword, newPassword, confirmPassword } = req.body;
   if (newPassword !== confirmPassword) return next(appError(400, "密碼不一致！", next));
   const user_id = req.user.id;
-  const userInfo = await userInfoIncludePassword(user_id);
-  const auth = await bcrypt.compare(oldPassword, userInfo.password);
-  if (!auth) return next(appError(401, "密碼輸入錯誤", next));
+  const user_info = await userInfoIncludePassword(user_id);
+  const is_auth = await bcrypt.compare(oldPassword, user_info.password);
+  if (!is_auth) return next(appError(401, "密碼輸入錯誤"));
   if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(newPassword)) return next(appError(400, "密碼需包含至少一個字母和一個數字,並且至少8個字符長"));
   newPassword = await bcrypt.hash(newPassword, 12);
   const user = await updatePasswordService(user_id, newPassword);
   generateSendJWT(user, res);
 };
 
+//追蹤會員API
 const follow = async (req, res, next) => {
-  const targetUserId = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
-  if (req.params.user_id === targetUserId) {
-    return next(appError(401, "你無法追蹤自己", next));
-  }
-
-  if (!(await User.findOne({ _id: req.params.user_id }))) {
-    return next(appError(401, "沒有此追蹤ID", next));
-  }
-
-  const data = await User.findOneAndUpdate(
-    {
-      _id: targetUserId,
-      "following.user": { $ne: req.params.user_id },
-    },
-    {
-      $addToSet: { following: { user: req.params.user_id } },
-    }
-  );
-  await User.updateOne(
-    {
-      _id: req.params.user_id,
-      "followers.user": { $ne: targetUserId },
-    },
-    {
-      $addToSet: { followers: { user: targetUserId } },
-    }
-  );
+  const user_id = req.user.payload?.id || req.user.id;
+  const target_user_id = req.params.user_id;
+  if (target_user_id === user_id) return next(appError(401, "你無法追蹤自己", next));
+  const data = await followUserService(user_id, target_user_id);
   return handleSuccess(res, "追蹤成功", data);
 };
 
@@ -100,7 +76,7 @@ const unfollow = async (req, res, next) => {
 };
 
 //更新會員資料API
-const patchprofile = async (req, res, next) => {
+const patchprofile = async (req, res) => {
   const user_id = req.user.payload?.id || req.user.id;
   let { name, sex, photo } = req.body;
   const updateuserinfo = await patchProfileService(user_id, name, sex, photo);
@@ -108,7 +84,7 @@ const patchprofile = async (req, res, next) => {
 };
 
 //取得追蹤清單API
-const getFollowingList = async (req, res, next) => {
+const getFollowingList = async (req, res) => {
   const user_id = req.user.payload?.googleId ? req.user.payload.id : req.user.id;
   const currentUser = await getFollowingListService(user_id);
   const followingList = currentUser.following;
@@ -116,14 +92,14 @@ const getFollowingList = async (req, res, next) => {
 };
 
 //取的按讚清單API(from post model)
-const getLikeList = async (req, res, next) => {
+const getLikeList = async (req, res) => {
   const user_id = req.user.payload?.id || req.user.id;
   const likeList = await getLikeListService(user_id);
   handleSuccess(res, "取得資料成功", likeList);
 };
 
 //google登入API
-const googleapis = async (req, res, next) => {
+const googleapis = async (req, res) => {
   let frontendCallbackUrl;
   const payload = {
     id: req.user._id,
