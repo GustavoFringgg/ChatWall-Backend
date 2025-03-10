@@ -6,33 +6,13 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 
 //services
-const { getUserPostService, getonePostService, deletePostWithCommentsService, postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
+const { getAllPostsService, getUserPostService, getonePostService, deletePostWithCommentsService, postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
 
-//functions
-//取得貼文
+//取得所有貼文API
 const getPosts = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
   const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
-  //"i" = 匹配時會忽略大小寫差異
-  let size = 50;
-  if (req.query.size) {
-    size = parseInt(req.query.size) > 50 ? 50 : parseInt(req.query.size);
-  }
-  let post = await Post.find(keyword)
-    .populate({
-      path: "user", //因為Post.find，所以指向Post model裡頭的user欄位
-    })
-    .populate({
-      path: "comments",
-      select: "comment user createdAt",
-      options: { sort: { createdAt: -1 } }, // 確保comments是由新到舊排序
-    })
-    .populate({
-      path: "likes",
-      select: "name",
-    })
-    .sort(timeSort)
-    .limit(size);
+  let post = await getAllPostsService(timeSort, keyword);
   if (req.query.timeSort === "hot") {
     post = post
       .map((post) => {
@@ -45,9 +25,10 @@ const getPosts = async (req, res, next) => {
   handleSuccess(res, post, `目前共有${post.length}則貼文`);
 };
 
+//取得會員個人貼文API
 const getuserpost = async (req, res, next) => {
   const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt";
-  const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keword, "i") } : {};
+  const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
   const user_id = req.params.id;
   let post = await getUserPostService(timeSort, keyword, user_id);
   if (req.query.timeSort === "hot") {
