@@ -6,7 +6,7 @@ const handleSuccess = require("../utils/handleSuccess");
 const appError = require("../utils/appError");
 
 //services
-const { getonePostService, deletePostWithCommentsService, postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
+const { getUserPostService, getonePostService, deletePostWithCommentsService, postcommentService, likePostService, postPostsService, deleteLikePostService, updatePostService } = require("../services/postService");
 
 //functions
 //取得貼文
@@ -41,41 +41,25 @@ const getPosts = async (req, res, next) => {
       })
       .sort((a, b) => b.hotscores - a.hotscores);
   }
-  if (post.length !== 0) {
-    return handleSuccess(res, post, `目前共有${post.length}則貼文`);
-  } else return handleSuccess(res, "尚未找到任何貼文", []);
+  if (post.length == 0) return handleSuccess(res, "尚未找到任何貼文", []);
+  handleSuccess(res, post, `目前共有${post.length}則貼文`);
 };
 
 const getuserpost = async (req, res, next) => {
-  const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt"; //createdAt由舊到新搜尋
-  const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keyword, "i") } : {};
-  const user = req.params.id;
-  let post = await Post.find({ user, ...keyword })
-    .populate({
-      path: "user",
-      select: "name photo email sex image",
-    })
-    .populate({
-      path: "comments",
-      select: "comment user createdAt",
-      options: { sort: { createdAt: -1 } },
-    })
-    .populate({
-      path: "likes",
-      select: "name",
-    })
-    .sort(timeSort);
+  const timeSort = req.query.timeSort == "asc" ? "createdAt" : "-createdAt";
+  const keyword = req.query.keyword !== undefined ? { content: new RegExp(req.query.keword, "i") } : {};
+  const user_id = req.params.id;
+  let post = await getUserPostService(timeSort, keyword, user_id);
   if (req.query.timeSort === "hot") {
     post = post
       .map((post) => {
-        const hotscores = (post.likes?.length || 0) * 2 + (post.comments?.length || 0);
+        const hotscores = post.likes?.length || 0 * 2 + (post.comments?.length || 0);
         return { ...post.toObject(), hotscores };
       })
       .sort((a, b) => b.hotscores - a.hotscores);
   }
-  if (post.length !== 0) {
-    return handleSuccess(res, post, `目前共有${post.length}則貼文`);
-  } else return handleSuccess(res, "尚未找到任何貼文", []);
+  if (post.length == 0) return handleSuccess(res, "尚未找到任何貼文", []);
+  handleSuccess(res, post, `目前共有${post.length}則貼文`);
 };
 
 //取得單一貼文API

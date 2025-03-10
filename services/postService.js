@@ -65,4 +65,21 @@ const getonePostService = async (post_id) => {
   return post;
 };
 
-module.exports = { getonePostService, getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService, postcommentService, deletePostWithCommentsService };
+//取得會員個人貼文
+const getUserPostService = async (timesort, keyword, user_id) => {
+  return await Post.find({ user: user_id, ...keyword })
+    .populate({ path: "user", select: "name photo email sex image" })
+    .populate({ path: "comments", select: "comment user createdAt", options: { sort: { createdAt: -1 } } })
+    .populate({ path: "likes", select: "name" })
+    .sort(timesort);
+};
+
+//取得所有貼文
+const getAllPostsService = async (timesort, keyword) => {
+  return await Post.find(keyword)
+    .populate({ path: "user", select: "name photo email sex image" })
+    .populate({ path: "comments", select: "comment user createdAt", options: { sort: { createdAt: -1 } } })
+    .populate({ path: "likes", select: "name" })
+    .sort(timesort);
+};
+module.exports = { getAllPostsService, getUserPostService, getonePostService, getLikeListService, likePostService, postPostsService, deleteLikePostService, updatePostService, postcommentService, deletePostWithCommentsService };

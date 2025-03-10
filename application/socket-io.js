@@ -1,6 +1,9 @@
-const socketIO = require("socket.io");
+//Model
 const Message = require("../model/message");
+//Third-party
 const mongoose = require("mongoose");
+const socketIO = require("socket.io");
+
 const messageBuffer = [];
 const SAVE_INTERVAL = 20000;
 
@@ -20,11 +23,6 @@ function connectSocketIo(server) {
         content,
         createdAt: new Date(),
       });
-      // try {
-      //   const message = await Message.create({
-      //     user: objectId,
-      //     content,
-      //   });
       io.emit("chatMessage", {
         user: {
           username,
